@@ -14,23 +14,68 @@ import {useSelector} from 'react-redux';
 import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
+import Header from '../components/Header';
 
 const Profile = () => {
     const navigation = useNavigation();
+    const token = useSelector(state => state.auth.token);
+    const [profile, setProfile] = React.useState({});
+
+    React.useEffect(() => {
+        async function getProfileUser() {
+            try {
+                const {data} = await http(token).get('/profile');
+                setProfile(data.results);
+                console(data);
+            } catch (error) {
+                const message = error?.response?.data?.message;
+                if (message) {
+                    console.log(message);
+                }
+            }
+        }
+        getProfileUser();
+    }, [token]);
+
     return (
         <View style={styles.mainWrap}>
+            <Header>Profile</Header>
             <View style={styles.main}>
                 <View style={styles.picture}>
                     <View style={styles.imageWrap}>
-                        <Image
-                            style={styles.image}
-                            source={require('../assets/user.png')}
-                        />
+                        {!profile.picture && (
+                            <Image
+                                style={styles.image}
+                                source={require('../assets/user.png')}
+                            />
+                        )}
+                        {profile.picture && (
+                            <Image
+                                style={styles.image}
+                                source={{
+                                    uri: profile.picture,
+                                }}
+                            />
+                        )}
                     </View>
                 </View>
                 <View>
-                    <Text style={styles.colorSecondary}>Lex Alexander</Text>
-                    <Text style={styles.colorNeutral}>Developer, ID</Text>
+                    {profile.fullName ? (
+                        <Text style={styles.colorSecondary}>
+                            {profile.fullName}
+                        </Text>
+                    ) : (
+                        <Text style={styles.colorSecondary}>
+                            {profile?.email}
+                        </Text>
+                    )}
+                    {profile.profession ? (
+                        <Text style={styles.colorNeutral}>
+                            {profile?.profession}, ID: {profile?.id}
+                        </Text>
+                    ) : (
+                        <Text style={styles.colorNeutral}>-</Text>
+                    )}
                 </View>
                 <View style={styles.flexDrx}>
                     <Text style={styles.heading}>Card</Text>
@@ -46,7 +91,7 @@ const Profile = () => {
                 </ScrollView>
                 <View style={{gap: 20, paddingBottom: 30}}>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Edit Profile')}>
+                        onPress={() => navigation.navigate('EditProfile')}>
                         <View style={styles.wrap}>
                             <View style={styles.editProfile}>
                                 <Icon
@@ -66,7 +111,7 @@ const Profile = () => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Change Password')}>
+                        onPress={() => navigation.navigate('ChangePassword')}>
                         <View style={styles.wrap}>
                             <View style={styles.editProfile}>
                                 <Icon
@@ -192,10 +237,9 @@ const styles = StyleSheet.create({
 
     image: {
         objectFit: 'cover',
-        height: 80,
-        width: 'auto',
+        height: '100%',
+        width: '100%',
         borderRadius: 100,
-        margin: 3,
     },
 });
 
