@@ -26,6 +26,7 @@ const Signup = () => {
             setErrorMsg(formError.errors[0].msg);
         }
     };
+
     return (
         <View style={styles.mainWrap}>
             <View style={styles.gap}>

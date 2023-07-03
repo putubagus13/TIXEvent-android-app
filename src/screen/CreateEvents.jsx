@@ -24,10 +24,12 @@ const CreateEvents = () => {
     const [create, setCreate] = React.useState(false);
     const [events, setEvents] = React.useState([]);
     const token = useSelector(state => state.auth.token);
+    console.log(events);
+
     React.useEffect(() => {
         async function getEventMenage() {
             try {
-                const {data} = await http(token).get('/events/manage?limit=5');
+                const {data} = await http(token).get('/events/manage?limit=10');
                 console.log(data);
                 setEvents(data.results);
             } catch (error) {

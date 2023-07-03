@@ -22,7 +22,7 @@ const Home = () => {
     const dispatch = useDispatch();
     const [events, setEvents] = React.useState([]);
     const [categoryData, setcategoryData] = React.useState([]);
-    const [search, setSearch] = React.useState('');
+    const [searchEvent, setSearchEvent] = React.useState('');
 
     const eventDetail = items => {
         dispatch(setEvent(items));
@@ -30,10 +30,10 @@ const Home = () => {
         console.log(items);
     };
 
-    async function getDataEvent(search = '') {
+    async function getDataEvent(name, searchEvent) {
         try {
             const {data} = await http().get('/events?limit=20', {
-                param: {search},
+                params: {category: name, search: searchEvent},
             });
             console.log(data);
             setEvents(data.results);
@@ -46,7 +46,7 @@ const Home = () => {
     }
 
     React.useEffect(() => {
-        getDataEvent(search);
+        getDataEvent(searchEvent);
 
         async function getCategory() {
             try {
@@ -61,13 +61,13 @@ const Home = () => {
             }
         }
         getCategory();
-    }, [search]);
+    }, [searchEvent]);
 
     return (
         <View style={styles.mainWrap}>
             <Header>Home</Header>
             <TextInput
-                onChangeText={setSearch}
+                onChangeText={setSearchEvent}
                 placeholder="Search"
                 placeholderTextColor="#9ca3af"
                 style={styles.search}
@@ -113,6 +113,23 @@ const Home = () => {
                                 </View>
                             </View>
                             <View style={styles.wrapBanner}>
+                                {!events.length && (
+                                    <View
+                                        style={{
+                                            alignItems: 'center',
+                                            paddingVertical: 20,
+                                            width: '100%',
+                                        }}>
+                                        <Text
+                                            style={{
+                                                color: '#006967',
+                                                fontWeight: '700',
+                                                fontSize: 20,
+                                            }}>
+                                            Result not found
+                                        </Text>
+                                    </View>
+                                )}
                                 <ScrollView horizontal={true}>
                                     {events.map(event => {
                                         return (
@@ -529,7 +546,7 @@ const styles = StyleSheet.create({
         borderColor: '#9ca3af',
         borderWidth: 1,
         borderRadius: 10,
-        color: '#003d3b',
+        color: 'white',
         paddingHorizontal: 16,
         marginHorizontal: 40,
         marginVertical: 30,

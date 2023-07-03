@@ -91,6 +91,19 @@ const EditProfile = () => {
         getProfileUser();
     }, [token]);
 
+    const cancleEdit = () => {
+        setEditFullname(false);
+        setEditEmail(false);
+        setEditPhone(false);
+        setEditProfession(false);
+        setEditNationality(false);
+        setEditGender(false);
+        setEditBirthdayDate(false);
+        setEditUsername(false);
+        setPicture(null);
+        setEdit(false);
+    };
+
     const openCamera = () => {
         const option = {
             mediaType: 'photo',
@@ -164,15 +177,14 @@ const EditProfile = () => {
             }
 
             if (token) {
-                const {data} = await http(token).post('/events', form, {
+                const {data} = await http(token).post('/profile', form, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-                console.log('test');
                 setSuccessMessage(data.masssage);
+                console.log(data);
             }
-            await http(token).get('/events/manage?limit=5');
         } catch (error) {
             const message = error?.response?.data?.message;
             console.log(message);
@@ -185,7 +197,7 @@ const EditProfile = () => {
                 <View style={styles.form}>
                     <View style={styles.picture}>
                         <View style={styles.imageWrap}>
-                            {!profile.picture && (
+                            {!profile.picture && !picture && (
                                 <Image
                                     style={styles.image}
                                     source={require('../assets/user.png')}
@@ -199,7 +211,7 @@ const EditProfile = () => {
                                     }}
                                 />
                             )}
-                            {picture && (
+                            {picture && !profile.picture && (
                                 <Image
                                     style={styles.image}
                                     source={{uri: picture.uri}}
@@ -244,6 +256,18 @@ const EditProfile = () => {
                         onSubmit={doUpdateProfile}>
                         {({handleChange, handleBlur, handleSubmit, values}) => (
                             <View style={styles.gap}>
+                                {successMessage && (
+                                    <View style={styles.border}>
+                                        <Icon
+                                            style={styles.textError}
+                                            size={22}
+                                            name="check"
+                                        />
+                                        <Text style={styles.textError}>
+                                            {successMessage}
+                                        </Text>
+                                    </View>
+                                )}
                                 <View style={styles.data}>
                                     <Text style={styles.colorSecondary}>
                                         Name
@@ -618,13 +642,25 @@ const EditProfile = () => {
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                                <TouchableOpacity onPress={handleSubmit}>
-                                    <View style={styles.button}>
-                                        <Text style={styles.textButton}>
-                                            Update
-                                        </Text>
-                                    </View>
-                                </TouchableOpacity>
+                                <View>
+                                    <TouchableOpacity onPress={handleSubmit}>
+                                        <View style={styles.button}>
+                                            <Text style={styles.textButton}>
+                                                Update
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    {editFullname && (
+                                        <TouchableOpacity
+                                            onPress={() => cancleEdit()}>
+                                            <View style={styles.cancleEdit}>
+                                                <Text style={styles.textButton}>
+                                                    Cancle
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )}
+                                </View>
                             </View>
                         )}
                     </Formik>
@@ -661,7 +697,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#006967',
         borderRadius: 10,
         alignItems: 'center',
-        marginVertical: 30,
+        marginVertical: 5,
+    },
+
+    cancleEdit: {
+        width: 'auto',
+        height: 45,
+        justifyContent: 'center',
+        backgroundColor: '#9ca3af',
+        borderRadius: 10,
+        alignItems: 'center',
+        marginVertical: 5,
     },
 
     textButton: {color: 'white', fontWeight: '600'},
@@ -717,6 +763,19 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop: 50,
     },
+
+    border: {
+        width: '100%',
+        height: 45,
+        borderRadius: 10,
+        backgroundColor: '#10b981',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 5,
+    },
+
+    textError: {color: 'white', fontWeight: '500'},
 });
 
 export default EditProfile;

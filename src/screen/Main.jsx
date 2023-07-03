@@ -24,6 +24,7 @@ import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
 import Landingpage from './Landingpage';
 import CreateEvents from './CreateEvents';
+import Touchid from './Touchid';
 
 const AuthStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -35,10 +36,10 @@ function CustomDrawerContent(props) {
             <DrawerItemList {...props} />
             <DrawerItem
                 label="Logout"
-                labelColor="red"
+                labelColor="grey"
                 onPress={() => dispatch(logout())}
                 icon={({focused, color, size}) => (
-                    <FeatherIcon name="log-out" color="red" size={size} />
+                    <FeatherIcon name="log-out" color="grey" size={size} />
                 )}
             />
         </DrawerContentScrollView>
@@ -127,7 +128,7 @@ function DrawerComponent() {
                 component={MyBooking}
                 options={{
                     drawerIcon: ({color, size}) => (
-                        <FeatherIcon name="list" color={color} size={size} />
+                        <FeatherIcon name="book" color={color} size={size} />
                     ),
                     drawerLabel: 'My Booking',
                 }}
@@ -146,10 +147,10 @@ function DrawerComponent() {
                 name="EvenDetail"
                 component={EvenDetail}
                 options={{
-                    drawerIcon: ({color, size}) => (
-                        <FeatherIcon name="heart" color={color} size={size} />
-                    ),
-                    drawerLabel: 'My Wishlist',
+                    // drawerIcon: ({color, size}) => (
+                    //     <FeatherIcon name="heart" color="white" size={size} />
+                    // ),
+                    drawerLabel: '',
                 }}
             />
         </Drawer.Navigator>
@@ -168,6 +169,7 @@ const Main = () => {
                     />
                     <AuthStack.Screen name="Signup" component={Signup} />
                     <AuthStack.Screen name="Login" component={Login} />
+                    <AuthStack.Screen name="Touchid" component={Touchid} />
                     <AuthStack.Screen
                         name="ForgotPassword"
                         component={ForgotPassword}

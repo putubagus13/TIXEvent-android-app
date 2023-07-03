@@ -69,7 +69,6 @@ const ResetPassword = () => {
                             <Input
                                 placeholder="Email"
                                 placeholderTextColor="#9ca3af"
-                                keyboardType="number-pad"
                                 onChangeText={handleChange('email')}
                                 onBlur={handleBlur('email')}
                                 value={values.email}

@@ -31,7 +31,6 @@ const Login = () => {
         if (formError.errors) {
             setErrorMsg(formError.errors[0].msg);
         }
-        navigation.navigate('Home');
     };
 
     return (
