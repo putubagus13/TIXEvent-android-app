@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 
-const Radio = ({children, onChange, value}) => {
+const InputRadio = ({children, onChange, value}) => {
     return (
         <TouchableOpacity
             onPress={() => onChange(children)}
@@ -39,4 +39,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Radio;
+export default InputRadio;
