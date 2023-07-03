@@ -15,11 +15,13 @@ import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import globalStyles from '../assets/globalStyles';
+import Header from '../components/Header';
 
 const MyWishlist = () => {
     const navigation = useNavigation();
     return (
         <View style={styles.mainWrap}>
+            <Header>My Wishlist</Header>
             <View style={styles.main}>
                 <View>
                     {/* <View style={styles.bookingWrap}>

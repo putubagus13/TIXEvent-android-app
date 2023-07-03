@@ -1,34 +1,40 @@
-import {
-    View,
-    Text,
-    Image,
-    StyleSheet,
-    TouchableWithoutFeedback,
-} from 'react-native';
+import {View, Text, Image, StyleSheet} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
 const Landingpage = () => {
     const navigation = useNavigation();
+    const token = useSelector(state => state.auth.token);
+    React.useEffect(() => {
+        if (token) {
+            setTimeout(() => {
+                navigation.navigate('Home');
+            }, 1500);
+        } else {
+            setTimeout(() => {
+                navigation.navigate('Signup');
+            }, 1500);
+        }
+    }, [navigation, token]);
+
     return (
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('Signup')}>
-            <View style={styles.mainWrap}>
-                <Text style={styles.textHeadding}>Find Events Your Love</Text>
-                <View style={styles.iconWrapTwo}>
-                    <Image
-                        style={styles.image}
-                        source={require('../assets/ToyFaces2.png')}
-                    />
-                </View>
-                <View style={styles.iconWrapOne}>
-                    <Image
-                        style={styles.image}
-                        source={require('../assets/ToyFaces1.png')}
-                    />
-                </View>
-                <View style={styles.gradien} />
+        <View style={styles.mainWrap}>
+            <Text style={styles.textHeadding}>Find Events Your Love</Text>
+            <View style={styles.iconWrapTwo}>
+                <Image
+                    style={styles.image}
+                    source={require('../assets/ToyFaces2.png')}
+                />
             </View>
-        </TouchableWithoutFeedback>
+            <View style={styles.iconWrapOne}>
+                <Image
+                    style={styles.image}
+                    source={require('../assets/ToyFaces1.png')}
+                />
+            </View>
+            <View style={styles.gradien} />
+        </View>
     );
 };
 

@@ -6,6 +6,7 @@ import http from '../helpers/http';
 import {useSelector} from 'react-redux';
 import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
+import Header from '../components/Header';
 
 const ChangePassword = () => {
     const token = useSelector(state => state.auth.token);
@@ -41,14 +42,13 @@ const ChangePassword = () => {
             const message = error?.response?.data?.message;
             if (message) {
                 setErrorMsg(message);
-            } else if (message.includes('Internal')) {
-                setErrorMsg('make sure to fill out all the forms');
             }
         }
     };
 
     return (
         <View style={styles.mainWrap}>
+            <Header>Change Password</Header>
             <Formik
                 initialValues={{
                     oldPassword: '',

@@ -15,11 +15,13 @@ import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import globalStyles from '../assets/globalStyles';
+import Header from '../components/Header';
 
 const MyBooking = () => {
     const navigation = useNavigation();
     return (
         <View style={styles.mainWrap}>
+            <Header>My Booking</Header>
             <View style={styles.main}>
                 <TouchableOpacity>
                     <View style={styles.dateWrap}>
@@ -28,14 +30,14 @@ const MyBooking = () => {
                     </View>
                 </TouchableOpacity>
                 <View>
-                    {/* <View style={styles.bookingWrap}>
+                    <View style={styles.bookingWrap}>
                         <Text style={styles.heading}>No ticket bought</Text>
                         <Text style={styles.paragraf}>
                             It appears you haven’t bought any tickets yet. Maybe
                             try searching these?
                         </Text>
-                    </View> */}
-                    <View style={styles.mainContain}>
+                    </View>
+                    {/* <View style={styles.mainContain}>
                         <View style={styles.conten}>
                             <View style={styles.eventWrap}>
                                 <Text style={styles.dateText}>15</Text>
@@ -67,7 +69,7 @@ const MyBooking = () => {
                                 </View>
                             </View>
                         </View>
-                    </View>
+                    </View> */}
                 </View>
             </View>
         </View>

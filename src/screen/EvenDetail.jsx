@@ -7,27 +7,44 @@ import {
     ScrollView,
 } from 'react-native';
 import React from 'react';
+import Header from '../components/Header';
+import {useSelector} from 'react-redux';
+import moment from 'moment';
 
 const EvenDetail = () => {
+    const events = useSelector(state => state.eventsDetail.data);
     return (
         <View style={styles.wrapMain}>
+            <Header>Event Detail</Header>
             <ScrollView showsVerticalScrollIndicator={true}>
                 <View style={styles.wrapBanner}>
-                    <Image
+                    {!events.picture && (
+                        <Image
+                            style={styles.imageBanner}
+                            source={require('../assets/Bitmap1.png')}
+                        />
+                    )}
+                    {events.picture && (
+                        <Image
+                            style={styles.imageBanner}
+                            source={{
+                                uri: events.picture,
+                            }}
+                        />
+                    )}
+                    {/* <Image
                         source={require('../assets/Bitmap1.png')}
                         style={styles.imageBanner}
-                    />
+                    /> */}
                 </View>
                 <View style={styles.bannerTextWrap}>
-                    <Text style={styles.textTittle}>
-                        Sights & Sounds Exhibition
-                    </Text>
+                    <Text style={styles.textTittle}>{events?.title}</Text>
                     <View style={styles.wrapLocationDate}>
                         <Text style={styles.textLocation}>
-                            Jakarta, Indonesia
+                            {events.location}
                         </Text>
                         <Text style={styles.textDate}>
-                            Wen, 14 Nov, 04.00 PM
+                            {moment(events.date).format('MMMM Do YYYY, h:mm')}
                         </Text>
                         <View style={styles.wrapAttendees}>
                             <Text style={styles.attendees}>Attendees</Text>
@@ -37,11 +54,7 @@ const EvenDetail = () => {
                 </View>
                 <View style={styles.wrapEventDetail}>
                     <Text style={styles.textHeddingone}>Event Detail</Text>
-                    <Text style={styles.descriptions}>
-                        After his controversial art exhibition "Tear and
-                        Consume" back in November 2018, in which guests were
-                        invited to tear up…
-                    </Text>
+                    <Text style={styles.descriptions}>{events.desciption}</Text>
                 </View>
                 <View style={styles.wrapEventLocation}>
                     <Text style={styles.textHeddingtwo}>Event Location</Text>
@@ -63,6 +76,7 @@ const EvenDetail = () => {
 const styles = StyleSheet.create({
     wrapMain: {
         position: 'relative',
+        height: '100%',
     },
 
     wrapBanner: {width: '100%', height: 400, overflow: 'hidden'},

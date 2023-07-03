@@ -5,6 +5,7 @@ import {
     TouchableOpacity,
     Image,
     ScrollView,
+    Platform,
 } from 'react-native';
 import React from 'react';
 import Input from '../components/Input';
@@ -13,6 +14,10 @@ import {useSelector} from 'react-redux';
 import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
 import {Formik} from 'formik';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import globalStyles from '../assets/globalStyles';
+import DropDownPicker from 'react-native-dropdown-picker';
+import Header from '../components/Header';
 
 const EditProfile = () => {
     const [editFullname, setEditFullname] = React.useState(false);
@@ -23,21 +28,209 @@ const EditProfile = () => {
     const [editProfession, setEditProfession] = React.useState(false);
     const [editNationality, setEditNationality] = React.useState(false);
     const [editBirthdayDate, setEditBirthdayDate] = React.useState(false);
+    const [profile, setProfile] = React.useState({});
+    const token = useSelector(state => state.auth.token);
+    const [picture, setPicture] = React.useState(null);
+    const [successMessage, setSuccessMessage] = React.useState('');
+    const [edit, setEdit] = React.useState(false);
+    const [profession, setProfession] = React.useState([
+        {
+            label: 'Developer',
+            value: 'Developer',
+        },
+        {
+            label: 'Bisnisman',
+            value: 'Bisnisman',
+        },
+        {
+            label: 'Farmer',
+            value: 'Farmer',
+        },
+        {
+            label: 'Driver',
+            value: 'Driver',
+        },
+    ]);
 
-    const doUpdateProfile = () => {
+    const [nationality, setNationality] = React.useState([
+        {
+            label: 'Indonesia',
+            value: 'Indonesia',
+        },
+        {
+            label: 'Malaysia',
+            value: 'Malaysia',
+        },
+        {
+            label: 'Singapure',
+            value: 'Singapure',
+        },
+        {
+            label: 'Dubai',
+            value: 'Dubai',
+        },
+    ]);
+    const [open, setOpen] = React.useState(false);
+    const [openSelect, setOpenSelect] = React.useState(false);
+    const [nationalityValue, setNationalityValue] = React.useState(null);
+    const [professionValue, setProfessionValue] = React.useState(null);
+
+    React.useEffect(() => {
+        async function getProfileUser() {
+            try {
+                const {data} = await http(token).get('/profile');
+                setProfile(data.results);
+                console(data.results);
+            } catch (error) {
+                const message = error?.response?.data?.message;
+                if (message) {
+                    console.log(message);
+                }
+            }
+        }
+        getProfileUser();
+    }, [token]);
+
+    const openCamera = () => {
+        const option = {
+            mediaType: 'photo',
+            quality: 1,
+        };
         console.log('test');
+        launchCamera(option, res => {
+            if (res.didCancel) {
+                console.log('Image picker cencle');
+            } else if (res.errorCode) {
+                console.log(res.errorMessage);
+            } else {
+                const data = res.assets[0];
+                setPicture(data);
+            }
+        });
+    };
+
+    const openGalery = () => {
+        const option = {
+            mediaType: 'photo',
+            quantity: 1,
+        };
+
+        launchImageLibrary(option, res => {
+            if (res.didCancel) {
+                console.log('Image picker cencle');
+            } else if (res.errorCode) {
+                console.log(res.errorMessage);
+            } else {
+                const data = res.assets[0];
+                setPicture(data);
+                console.log(data);
+            }
+        });
+    };
+
+    const doUpdateProfile = async values => {
+        console.log(
+            values.fullName,
+            values.username,
+            values.email,
+            values.phoneNumber,
+            professionValue,
+            nationalityValue,
+            picture,
+        );
+        try {
+            const form = new FormData();
+            Object.keys(values).forEach(key => {
+                if (values[key]) {
+                    form.append(key, values[key]);
+                }
+            });
+            form.append('fullName', values.fullName);
+            form.append('username', values.username);
+            form.append('email', values.email);
+            form.append('phoneNumber', values.phoneNumber);
+            form.append('phoneNumber', professionValue);
+            form.append('nasionality', nationalityValue);
+
+            if (picture) {
+                form.append('picture', {
+                    name: picture.fileName,
+                    type: picture.type,
+                    uri:
+                        Platform.OS === 'android'
+                            ? picture.uri.replace('file://', ' ')
+                            : picture.uri,
+                });
+            }
+
+            if (token) {
+                const {data} = await http(token).post('/events', form, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                console.log('test');
+                setSuccessMessage(data.masssage);
+            }
+            await http(token).get('/events/manage?limit=5');
+        } catch (error) {
+            const message = error?.response?.data?.message;
+            console.log(message);
+        }
     };
     return (
         <View style={styles.mainWrap}>
+            <Header>Edit Profile</Header>
             <ScrollView showsVerticalScrollIndicator={true}>
                 <View style={styles.form}>
                     <View style={styles.picture}>
                         <View style={styles.imageWrap}>
-                            <Image
-                                style={styles.image}
-                                source={require('../assets/user.png')}
-                            />
+                            {!profile.picture && (
+                                <Image
+                                    style={styles.image}
+                                    source={require('../assets/user.png')}
+                                />
+                            )}
+                            {profile.picture && !picture && (
+                                <Image
+                                    style={styles.image}
+                                    source={{
+                                        uri: profile.picture,
+                                    }}
+                                />
+                            )}
+                            {picture && (
+                                <Image
+                                    style={styles.image}
+                                    source={{uri: picture.uri}}
+                                />
+                            )}
                         </View>
+                    </View>
+                    <View style={styles.gapTwo}>
+                        {!edit && (
+                            <TouchableOpacity onPress={() => setEdit(!edit)}>
+                                <Icon
+                                    style={globalStyles.colorSecondary}
+                                    name="edit"
+                                    size={20}
+                                />
+                            </TouchableOpacity>
+                        )}
+                        {edit && (
+                            <>
+                                <TouchableOpacity onPress={openCamera}>
+                                    <View style={styles.fileWrap}>
+                                        <Text>Camera</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={openGalery}>
+                                    <View style={styles.fileWrap}>
+                                        <Text>File</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </>
+                        )}
                     </View>
                     <Formik
                         initialValues={{
@@ -46,8 +239,6 @@ const EditProfile = () => {
                             email: '',
                             gender: '',
                             phoneNumber: '',
-                            profession: '',
-                            nasionality: '',
                             birthDate: '',
                         }}
                         onSubmit={doUpdateProfile}>
@@ -70,9 +261,23 @@ const EditProfile = () => {
                                             />
                                         )}
                                         {!editFullname && (
-                                            <Text style={styles.colorNeutral}>
-                                                Lex Alexander
-                                            </Text>
+                                            <>
+                                                {profile.fullName ? (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        {profile?.fullName}
+                                                    </Text>
+                                                ) : (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        -set-
+                                                    </Text>
+                                                )}
+                                            </>
                                         )}
                                         <TouchableOpacity
                                             onPress={() =>
@@ -104,9 +309,23 @@ const EditProfile = () => {
                                             />
                                         )}
                                         {!editUsername && (
-                                            <Text style={styles.colorNeutral}>
-                                                @Lex12
-                                            </Text>
+                                            <>
+                                                {profile.username ? (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        {profile?.username}
+                                                    </Text>
+                                                ) : (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        -set-
+                                                    </Text>
+                                                )}
+                                            </>
                                         )}
                                         <TouchableOpacity
                                             onPress={() =>
@@ -138,9 +357,23 @@ const EditProfile = () => {
                                             />
                                         )}
                                         {!editEmail && (
-                                            <Text style={styles.colorNeutral}>
-                                                Lex@mail.com
-                                            </Text>
+                                            <>
+                                                {profile.email ? (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        {profile?.email}
+                                                    </Text>
+                                                ) : (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        -set-
+                                                    </Text>
+                                                )}
+                                            </>
                                         )}
                                         <TouchableOpacity
                                             onPress={() =>
@@ -174,9 +407,23 @@ const EditProfile = () => {
                                             />
                                         )}
                                         {!editPhone && (
-                                            <Text style={styles.colorNeutral}>
-                                                08123456789
-                                            </Text>
+                                            <>
+                                                {profile.phoneNumber ? (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        {profile?.phoneNumber}
+                                                    </Text>
+                                                ) : (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        -set-
+                                                    </Text>
+                                                )}
+                                            </>
                                         )}
                                         <TouchableOpacity
                                             onPress={() =>
@@ -231,22 +478,39 @@ const EditProfile = () => {
                                     </Text>
                                     <View style={styles.flexDerection}>
                                         {editProfession && (
-                                            <Input
-                                                // placeholder="Password"
-                                                placeholderTextColor="#9ca3af"
-                                                onChangeText={handleChange(
-                                                    'profession',
-                                                )}
-                                                onBlur={handleBlur(
-                                                    'profession',
-                                                )}
-                                                value={values.profession}
+                                            <DropDownPicker
+                                                placeholder="Select profession"
+                                                dropDownContainerStyle={
+                                                    styles.dropPicker
+                                                }
+                                                textStyle={styles.textPicker}
+                                                open={open}
+                                                value={professionValue}
+                                                items={profession}
+                                                setOpen={setOpen}
+                                                setValue={setProfessionValue}
+                                                setItems={setProfession}
+                                                zIndex={1001}
                                             />
                                         )}
                                         {!editProfession && (
-                                            <Text style={styles.colorNeutral}>
-                                                Developer
-                                            </Text>
+                                            <>
+                                                {profile.profession ? (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        {profile?.profession}
+                                                    </Text>
+                                                ) : (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        -set-
+                                                    </Text>
+                                                )}
+                                            </>
                                         )}
                                         <TouchableOpacity
                                             onPress={() =>
@@ -269,22 +533,39 @@ const EditProfile = () => {
                                     </Text>
                                     <View style={styles.flexDerection}>
                                         {editNationality && (
-                                            <Input
-                                                // placeholder="Password"
-                                                placeholderTextColor="#9ca3af"
-                                                onChangeText={handleChange(
-                                                    'nasionality',
-                                                )}
-                                                onBlur={handleBlur(
-                                                    'nasionality',
-                                                )}
-                                                value={values.nasionality}
+                                            <DropDownPicker
+                                                placeholder="Select nationality"
+                                                dropDownContainerStyle={
+                                                    styles.dropPicker
+                                                }
+                                                textStyle={styles.textPicker}
+                                                open={openSelect}
+                                                value={nationalityValue}
+                                                items={nationality}
+                                                setOpen={setOpenSelect}
+                                                setValue={setNationalityValue}
+                                                setItems={setNationality}
+                                                zIndex={1000}
                                             />
                                         )}
                                         {!editNationality && (
-                                            <Text style={styles.colorNeutral}>
-                                                Indonesia
-                                            </Text>
+                                            <>
+                                                {profile.nasionality ? (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        {profile?.nasionality}
+                                                    </Text>
+                                                ) : (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        -set-
+                                                    </Text>
+                                                )}
+                                            </>
                                         )}
                                         <TouchableOpacity
                                             onPress={() =>
@@ -362,6 +643,17 @@ const styles = StyleSheet.create({
 
     gap: {gap: 30},
 
+    gapTwo: {gap: 3, width: '100%', alignItems: 'center'},
+
+    fileWrap: {
+        height: 25,
+        width: 100,
+        backgroundColor: '#9ca3af',
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
     button: {
         width: 'auto',
         height: 45,
@@ -405,10 +697,9 @@ const styles = StyleSheet.create({
 
     image: {
         objectFit: 'cover',
-        height: 80,
-        width: 'auto',
+        width: '100%',
+        height: '100%',
         borderRadius: 100,
-        margin: 3,
     },
 
     data: {

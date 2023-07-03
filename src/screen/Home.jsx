@@ -12,13 +12,62 @@ import {useNavigation} from '@react-navigation/native';
 import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/Feather';
 import globalStyles from '../assets/globalStyles';
+import http from '../helpers/http';
+import moment from 'moment';
+import {useDispatch} from 'react-redux';
+import {setEvent} from '../redux/reducers/eventsDetail';
 
 const Home = () => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const [events, setEvents] = React.useState([]);
+    const [categoryData, setcategoryData] = React.useState([]);
+    const [search, setSearch] = React.useState('');
+
+    const eventDetail = items => {
+        dispatch(setEvent(items));
+        navigation.navigate('EvenDetail');
+        console.log(items);
+    };
+
+    async function getDataEvent(search = '') {
+        try {
+            const {data} = await http().get('/events?limit=20', {
+                param: {search},
+            });
+            console.log(data);
+            setEvents(data.results);
+        } catch (error) {
+            const message = error?.response?.data?.message;
+            if (message) {
+                console.log(message);
+            }
+        }
+    }
+
+    React.useEffect(() => {
+        getDataEvent(search);
+
+        async function getCategory() {
+            try {
+                const {data} = await http().get('/categories?limit=10');
+                console.log(data);
+                setcategoryData(data.results);
+            } catch (error) {
+                const message = error?.response?.data?.message;
+                if (message) {
+                    console.log(message);
+                }
+            }
+        }
+        getCategory();
+    }, [search]);
+
     return (
         <View style={styles.mainWrap}>
-            <Header />
+            <Header>Home</Header>
             <TextInput
+                onChangeText={setSearch}
                 placeholder="Search"
                 placeholderTextColor="#9ca3af"
                 style={styles.search}
@@ -65,74 +114,60 @@ const Home = () => {
                             </View>
                             <View style={styles.wrapBanner}>
                                 <ScrollView horizontal={true}>
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('')}>
-                                        <View style={styles.bannerContainer}>
-                                            <Image
-                                                style={styles.banner}
-                                                source={require('../assets/Bitmap1.png')}
-                                            />
-                                            <View style={styles.wrapTextBanner}>
-                                                <Text style={styles.textWhite}>
-                                                    Wed, 15 Nov, 04.00 PM
-                                                </Text>
-                                                <Text style={styles.textTitle}>
-                                                    Sights & Sounds Exhibition
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('')}>
-                                        <View style={styles.bannerContainer}>
-                                            <Image
-                                                style={styles.banner}
-                                                source={require('../assets/Bitmap.png')}
-                                            />
-                                            <View style={styles.wrapTextBanner}>
-                                                <Text style={styles.textWhite}>
-                                                    Wed, 15 Nov, 04.00 PM
-                                                </Text>
-                                                <Text style={styles.textTitle}>
-                                                    Sights & Sounds Exhibition
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('')}>
-                                        <View style={styles.bannerContainer}>
-                                            <Image
-                                                style={styles.banner}
-                                                source={require('../assets/Bitmap1.png')}
-                                            />
-                                            <View style={styles.wrapTextBanner}>
-                                                <Text style={styles.textWhite}>
-                                                    Wed, 15 Nov, 04.00 PM
-                                                </Text>
-                                                <Text style={styles.textTitle}>
-                                                    Sights & Sounds Exhibition
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('')}>
-                                        <View style={styles.bannerContainer}>
-                                            <Image
-                                                style={styles.banner}
-                                                source={require('../assets/Bitmap.png')}
-                                            />
-                                            <View style={styles.wrapTextBanner}>
-                                                <Text style={styles.textWhite}>
-                                                    Wed, 15 Nov, 04.00 PM
-                                                </Text>
-                                                <Text style={styles.textTitle}>
-                                                    Sights & Sounds Exhibition
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    </TouchableOpacity>
+                                    {events.map(event => {
+                                        return (
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    eventDetail(event)
+                                                }
+                                                key={`events-${event.id}`}>
+                                                <View
+                                                    style={
+                                                        styles.bannerContainer
+                                                    }>
+                                                    {!events.picture && (
+                                                        <Image
+                                                            style={
+                                                                styles.banner
+                                                            }
+                                                            source={require('../assets/Bitmap.png')}
+                                                        />
+                                                    )}
+                                                    {events.picture && (
+                                                        <Image
+                                                            style={
+                                                                styles.banner
+                                                            }
+                                                            source={{
+                                                                uri: events.picture,
+                                                            }}
+                                                        />
+                                                    )}
+                                                    <View
+                                                        style={
+                                                            styles.wrapTextBanner
+                                                        }>
+                                                        <Text
+                                                            style={
+                                                                styles.textWhite
+                                                            }>
+                                                            {moment(
+                                                                event.date,
+                                                            ).format(
+                                                                'MMMM Do YYYY, h:mm',
+                                                            )}
+                                                        </Text>
+                                                        <Text
+                                                            style={
+                                                                styles.textTitle
+                                                            }>
+                                                            {event.title}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            </TouchableOpacity>
+                                        );
+                                    })}
                                 </ScrollView>
                             </View>
                             <View style={styles.bannerWrap}>
@@ -142,36 +177,96 @@ const Home = () => {
                             </View>
                             <View style={styles.wrapBanner}>
                                 <ScrollView horizontal={true}>
-                                    <View style={styles.discover}>
-                                        <View style={styles.discoverChildren}>
-                                            <Icon
-                                                style={styles.locationIcon}
-                                                name="map-pin"
-                                                size={19}
-                                            />
-                                        </View>
-                                        <Text>YOUR AREA</Text>
-                                    </View>
-                                    <View style={styles.discover}>
-                                        <View style={styles.discoverChildren}>
-                                            <Icon
-                                                style={styles.locationIcon}
-                                                name="music"
-                                                size={19}
-                                            />
-                                        </View>
-                                        <Text>MUSIC</Text>
-                                    </View>
-                                    <View style={styles.discover}>
-                                        <View style={styles.discoverChildren}>
-                                            <Icon
-                                                style={styles.locationIcon}
-                                                name="film"
-                                                size={19}
-                                            />
-                                        </View>
-                                        <Text>MOVIE</Text>
-                                    </View>
+                                    {categoryData.map(items => {
+                                        return (
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    getDataEvent(items.name)
+                                                }
+                                                key={`category-${items.id}`}>
+                                                <View style={styles.discover}>
+                                                    <View
+                                                        style={
+                                                            styles.discoverChildren
+                                                        }>
+                                                        {items.name ===
+                                                            'Music' && (
+                                                            <Icon
+                                                                style={
+                                                                    styles.locationIcon
+                                                                }
+                                                                name="music"
+                                                                size={19}
+                                                            />
+                                                        )}
+                                                        {items.name ===
+                                                            'Arts' && (
+                                                            <Icon
+                                                                style={
+                                                                    styles.locationIcon
+                                                                }
+                                                                name="feather"
+                                                                size={19}
+                                                            />
+                                                        )}
+                                                        {items.name ===
+                                                            'Outdoor' && (
+                                                            <Icon
+                                                                style={
+                                                                    styles.locationIcon
+                                                                }
+                                                                name="sun"
+                                                                size={19}
+                                                            />
+                                                        )}
+                                                        {items.name ===
+                                                            'Workshop' && (
+                                                            <Icon
+                                                                style={
+                                                                    styles.locationIcon
+                                                                }
+                                                                name="globe"
+                                                                size={19}
+                                                            />
+                                                        )}
+                                                        {items.name ===
+                                                            'Sport' && (
+                                                            <Icon
+                                                                style={
+                                                                    styles.locationIcon
+                                                                }
+                                                                name="dribbble"
+                                                                size={19}
+                                                            />
+                                                        )}
+                                                        {items.name ===
+                                                            'Festival' && (
+                                                            <Icon
+                                                                style={
+                                                                    styles.locationIcon
+                                                                }
+                                                                name="airplay"
+                                                                size={19}
+                                                            />
+                                                        )}
+                                                        {items.name ===
+                                                            'Movie' && (
+                                                            <Icon
+                                                                style={
+                                                                    styles.locationIcon
+                                                                }
+                                                                name="film"
+                                                                size={19}
+                                                            />
+                                                        )}
+                                                    </View>
+                                                    <Text>
+                                                        {items.name.toUpperCase()}
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        );
+                                    })}
                                 </ScrollView>
                             </View>
                             <View style={styles.bannerWrap}>
@@ -426,7 +521,6 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: '#006967',
         height: '100%',
-        paddingVertical: 20,
     },
 
     search: {

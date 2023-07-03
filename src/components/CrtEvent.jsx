@@ -5,6 +5,7 @@ import {
     ScrollView,
     TouchableOpacity,
     Image,
+    Platform,
 } from 'react-native';
 import React from 'react';
 import Input from './Input';
@@ -129,7 +130,14 @@ const CrtEvent = () => {
             });
             console.log(categoryValue, locationValue, picture, values.date);
             if (picture) {
-                form.append('picture', picture);
+                form.append('picture', {
+                    name: picture.fileName,
+                    type: picture.type,
+                    uri:
+                        Platform.OS === 'android'
+                            ? picture.uri
+                            : picture.uri.replace('file://', ''),
+                });
             }
             form.append('categoryId', categoryValue);
             form.append('cityId', locationValue);

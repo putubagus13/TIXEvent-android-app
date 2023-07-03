@@ -16,12 +16,32 @@ import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import globalStyles from '../assets/globalStyles';
 import CrtEvent from '../components/CrtEvent';
+import Header from '../components/Header';
+import moment from 'moment';
 
 const CreateEvents = () => {
     const navigation = useNavigation();
     const [create, setCreate] = React.useState(false);
+    const [events, setEvents] = React.useState([]);
+    const token = useSelector(state => state.auth.token);
+    React.useEffect(() => {
+        async function getEventMenage() {
+            try {
+                const {data} = await http(token).get('/events/manage?limit=5');
+                console.log(data);
+                setEvents(data.results);
+            } catch (error) {
+                const message = error?.response?.data?.message;
+                if (message) {
+                    console.log(message);
+                }
+            }
+        }
+        getEventMenage();
+    }, [token]);
     return (
         <View style={styles.mainWrap}>
+            <Header>Create Event</Header>
             <View style={styles.main}>
                 {create === false && (
                     <TouchableOpacity onPress={() => setCreate(!create)}>
@@ -49,61 +69,92 @@ const CreateEvents = () => {
                         </Text>
                     </View> */}
                     {create === false && (
-                        <View style={styles.mainContain}>
-                            <View style={styles.conten}>
-                                <View style={styles.eventWrap}>
-                                    <View>
-                                        <Text style={styles.dateText}>15</Text>
-                                        <Text style={styles.paragraf}>Wed</Text>
+                        <View>
+                            {events.map(event => {
+                                return (
+                                    <View
+                                        key={`event-${event.id}`}
+                                        style={styles.mainContain}>
+                                        <View style={styles.conten}>
+                                            <View style={styles.eventWrap}>
+                                                <View>
+                                                    <Text
+                                                        style={styles.dateText}>
+                                                        {moment(
+                                                            event.date,
+                                                        ).format('DD')}
+                                                    </Text>
+                                                    <Text
+                                                        style={styles.paragraf}>
+                                                        {moment(
+                                                            event.date,
+                                                        ).format('ddd')}
+                                                    </Text>
+                                                </View>
+                                                <TouchableOpacity>
+                                                    <Icon
+                                                        style={styles.icon}
+                                                        name="heart"
+                                                        size={22}
+                                                    />
+                                                </TouchableOpacity>
+                                            </View>
+                                            <View style={styles.event}>
+                                                <Text style={styles.titleText}>
+                                                    {event.title}
+                                                </Text>
+                                                <View
+                                                    style={
+                                                        styles.eventLocation
+                                                    }>
+                                                    <Text
+                                                        style={
+                                                            globalStyles.colorNeutral
+                                                        }>
+                                                        {event.location}
+                                                    </Text>
+                                                    <Text
+                                                        style={
+                                                            globalStyles.colorNeutral
+                                                        }>
+                                                        {moment(
+                                                            event.date,
+                                                        ).format(
+                                                            'MMMM Do YYYY, h:mm a',
+                                                        )}
+                                                    </Text>
+                                                </View>
+                                                <View style={styles.option}>
+                                                    <TouchableOpacity>
+                                                        <Text
+                                                            style={
+                                                                globalStyles.colorAccent
+                                                            }>
+                                                            Detail
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity>
+                                                        <Text
+                                                            style={
+                                                                globalStyles.colorAccent
+                                                            }>
+                                                            Update
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity>
+                                                        <Text
+                                                            style={
+                                                                globalStyles.colorAccent
+                                                            }>
+                                                            Delete
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        </View>
                                     </View>
-                                    <TouchableOpacity>
-                                        <Icon
-                                            style={styles.icon}
-                                            name="heart"
-                                            size={22}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.event}>
-                                    <Text style={styles.titleText}>
-                                        Sights & Sounds Exhibition
-                                    </Text>
-                                    <View style={styles.eventLocation}>
-                                        <Text style={globalStyles.colorNeutral}>
-                                            Jakarta, Indonesia
-                                        </Text>
-                                        <Text style={globalStyles.colorNeutral}>
-                                            Wed, 15 Nov, 4:00 PM
-                                        </Text>
-                                    </View>
-                                    <View style={styles.option}>
-                                        <TouchableOpacity>
-                                            <Text
-                                                style={
-                                                    globalStyles.colorAccent
-                                                }>
-                                                Detail
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity>
-                                            <Text
-                                                style={
-                                                    globalStyles.colorAccent
-                                                }>
-                                                Update
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity>
-                                            <Text
-                                                style={
-                                                    globalStyles.colorAccent
-                                                }>
-                                                Delete
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
+                                );
+                            })}
                         </View>
                     )}
                 </View>

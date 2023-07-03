@@ -7,10 +7,12 @@ import {
     ScrollView,
 } from 'react-native';
 import React from 'react';
+import Header from '../components/Header';
 
 const DataReservation = () => {
     return (
         <View style={styles.wrapMain}>
+            <Header>Detail Reservation</Header>
             <View style={styles.wrapBanner}>
                 <Image
                     source={require('../assets/Bitmap1.png')}
