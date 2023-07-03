@@ -1,111 +1,188 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+    createDrawerNavigator,
+    DrawerContentScrollView,
+    DrawerItemList,
+    DrawerItem,
+} from '@react-navigation/drawer';
+import {logout} from '../redux/reducers/auth';
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Home from './Home';
-import EvenDetail from './EvenDetail';
-import Landingpage from './Landingpage';
-import ResetPassword from './ResetPassword';
-import ForgotPassword from './ForgotPassword';
-import Touchid from './Touchid';
-import Signup from './Signup';
-import Login from './Login';
-import {useSelector} from 'react-redux';
-import DataReservation from './DataReservation';
-import ChangePassword from './ChangePassword';
-import EditProfile from './EditProfile';
 import Profile from './Profile';
+import EditProfile from './EditProfile';
+import ChangePassword from './ChangePassword';
+import EvenDetail from './EvenDetail';
 import MyBooking from './MyBooking';
 import MyWishlist from './MyWishlist';
+import Signup from './Signup';
+import Login from './Login';
+import ForgotPassword from './ForgotPassword';
+import ResetPassword from './ResetPassword';
+import Landingpage from './Landingpage';
 import CreateEvents from './CreateEvents';
 
-const Stack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+function CustomDrawerContent(props) {
+    const dispatch = useDispatch();
+    return (
+        <DrawerContentScrollView {...props}>
+            <DrawerItemList {...props} />
+            <DrawerItem
+                label="Logout"
+                labelColor="red"
+                onPress={() => dispatch(logout())}
+                icon={({focused, color, size}) => (
+                    <FeatherIcon name="log-out" color="red" size={size} />
+                )}
+            />
+        </DrawerContentScrollView>
+    );
+}
+
+function DrawerComponent() {
+    return (
+        <Drawer.Navigator
+            screenOptions={{
+                headerShown: false,
+                drawerStyle: {
+                    backgroundColor: '#eaeaea',
+                    width: 240,
+                },
+            }}
+            drawerContent={props => <CustomDrawerContent {...props} />}>
+            <Drawer.Screen
+                name="Landingpage"
+                component={Landingpage}
+                options={{drawerLabel: () => null}}
+            />
+            <Drawer.Screen
+                name="Home"
+                component={Home}
+                options={{
+                    drawerIcon: ({color, size}) => (
+                        <FontAwesome5Icon
+                            name="home"
+                            color={color}
+                            size={size}
+                        />
+                    ),
+                    drawerLabel: 'Home',
+                }}
+            />
+            <Drawer.Screen
+                name="Profile"
+                component={Profile}
+                options={{
+                    drawerIcon: ({color, size}) => (
+                        <FeatherIcon name="user" color={color} size={size} />
+                    ),
+
+                    drawerLabel: 'Profile',
+                }}
+            />
+            <Drawer.Screen
+                name="EditProfile"
+                component={EditProfile}
+                options={{
+                    drawerIcon: ({color, size}) => (
+                        <FeatherIcon name="user" color={color} size={size} />
+                    ),
+                    drawerItemStyle: {
+                        display: 'none',
+                    },
+                    drawerLabel: 'EditProfile',
+                }}
+            />
+            <Drawer.Screen
+                name="ChangePassword"
+                component={ChangePassword}
+                options={{
+                    drawerIcon: ({color, size}) => (
+                        <FeatherIcon name="user" color={color} size={size} />
+                    ),
+                    drawerItemStyle: {
+                        display: 'none',
+                    },
+                    drawerLabel: 'Change Password',
+                }}
+            />
+            <Drawer.Screen
+                name="CreateEvents"
+                component={CreateEvents}
+                options={{
+                    drawerIcon: ({color, size}) => (
+                        <FeatherIcon name="plus-circle" color={color} size={size} />
+                    ),
+                    drawerLabel: 'Create Event',
+                }}
+            />
+            <Drawer.Screen
+                name="MyBooking"
+                component={MyBooking}
+                options={{
+                    drawerIcon: ({color, size}) => (
+                        <FeatherIcon name="list" color={color} size={size} />
+                    ),
+                    drawerLabel: 'My Booking',
+                }}
+            />
+            <Drawer.Screen
+                name="MyWishlist"
+                component={MyWishlist}
+                options={{
+                    drawerIcon: ({color, size}) => (
+                        <FeatherIcon name="heart" color={color} size={size} />
+                    ),
+                    drawerLabel: 'My Wishlist',
+                }}
+            />
+            <Drawer.Screen
+                name="EvenDetail"
+                component={EvenDetail}
+                options={{
+                    drawerIcon: ({color, size}) => (
+                        <FeatherIcon name="heart" color={color} size={size} />
+                    ),
+                    drawerLabel: 'My Wishlist',
+                }}
+            />
+        </Drawer.Navigator>
+    );
+}
 
 const Main = () => {
     const token = useSelector(state => state.auth.token);
-    const headerStyle = {
-        backgroundColor: '#006967',
-    };
-    const headerTitleStyle = {
-        color: 'white',
-    };
-
     return (
         <NavigationContainer>
             {!token && (
-                <AuthStack.Navigator
-                    screenOptions={{
-                        headerShadowVisible: false,
-                        headerTitle: '',
-                    }}>
+                <AuthStack.Navigator screenOptions={{headerShown: false}}>
                     <AuthStack.Screen
-                        name="LandingPage"
+                        name="Landingpage"
                         component={Landingpage}
                     />
                     <AuthStack.Screen name="Signup" component={Signup} />
                     <AuthStack.Screen name="Login" component={Login} />
-                    <AuthStack.Screen name="Touchid" component={Touchid} />
-                    <AuthStack.Screen
-                        name="ResetPassword"
-                        component={ResetPassword}
-                    />
                     <AuthStack.Screen
                         name="ForgotPassword"
                         component={ForgotPassword}
                     />
+                    <AuthStack.Screen
+                        name="ResetPassword"
+                        component={ResetPassword}
+                    />
                 </AuthStack.Navigator>
             )}
-
             {token && (
-                <Stack.Navigator
-                    screenOptions={{
-                        headerShadowVisible: false,
-                        headerStyle: headerStyle,
-                        headerTitleStyle: headerTitleStyle,
-                    }}>
-                    <Stack.Screen
-                        name="Create Event"
-                        component={CreateEvents}
-                    />
-                    <Stack.Screen name="My Wishlist" component={MyWishlist} />
-                    <Stack.Screen name="My Booking" component={MyBooking} />
-                    <Stack.Screen name="Profile" component={Profile} />
-                    <Stack.Screen name="Edit Profile" component={EditProfile} />
-                    <Stack.Screen
-                        name="Change Password"
-                        component={ChangePassword}
-                    />
-                    <Stack.Screen
-                        name="Detail Reservation"
-                        component={DataReservation}
-                    />
-                    <Stack.Screen name="Event Detail" component={EvenDetail} />
-                    <Stack.Screen name="Home" component={Home} />
-                </Stack.Navigator>
+                <>
+                    <DrawerComponent />
+                </>
             )}
-            {/* <Stack.Navigator
-                screenOptions={{
-                    headerShadowVisible: false,
-                    headerStyle: headerStyle,
-                    headerTitleStyle: headerTitleStyle,
-                    // header: () => null,
-                }}>
-                <Stack.Screen name="Create Event" component={CreateEvents} />
-                <Stack.Screen name="My Wishlist" component={MyWishlist} />
-                <Stack.Screen name="My Booking" component={MyBooking} />
-                <Stack.Screen name="Profile" component={Profile} />
-                <Stack.Screen name="Edit Profile" component={EditProfile} />
-                <Stack.Screen
-                    name="Change Password"
-                    component={ChangePassword}
-                />
-                <Stack.Screen
-                    name="Detail Reservation"
-                    component={DataReservation}
-                />
-                <Stack.Screen name="Event Detail" component={EvenDetail} />
-                <Stack.Screen name="Home" component={Home} />
-            </Stack.Navigator> */}
         </NavigationContainer>
     );
 };
