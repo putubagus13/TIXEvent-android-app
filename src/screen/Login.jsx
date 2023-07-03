@@ -22,7 +22,6 @@ const Login = () => {
     const formError = useSelector(state => state.auth.formError);
     const errorMessage = useSelector(state => state.auth.errorMessage);
     const [errorMsg, setErrorMsg] = React.useState('');
-    const token = useSelector(state => state.auth.token);
 
     const doLogin = async values => {
         setErrorMsg('');
