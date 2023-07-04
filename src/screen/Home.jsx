@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import globalStyles from '../assets/globalStyles';
 import http from '../helpers/http';
 import moment from 'moment';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setEvent} from '../redux/reducers/eventsDetail';
 
 const Home = () => {
@@ -23,6 +23,14 @@ const Home = () => {
     const [events, setEvents] = React.useState([]);
     const [categoryData, setcategoryData] = React.useState([]);
     const [searchEvent, setSearchEvent] = React.useState('');
+    const token = useSelector(state => state.auth.token);
+    const deviceToken = useSelector(state => state.deviceToken.data);
+
+    const saveToken = React.useCallback(async () => {
+        const form = new URLSearchParams({token: deviceToken.token});
+        const {data} = await http(token).post('/device-token', form.toString());
+        console.log(data);
+    }, [token, deviceToken]);
 
     const eventDetail = items => {
         dispatch(setEvent(items));
@@ -47,6 +55,7 @@ const Home = () => {
 
     React.useEffect(() => {
         getDataEvent(searchEvent);
+        saveToken();
 
         async function getCategory() {
             try {
