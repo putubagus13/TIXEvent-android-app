@@ -158,10 +158,6 @@ const EditProfile = () => {
                     form.append(key, values[key]);
                 }
             });
-            form.append('fullName', values.fullName);
-            form.append('username', values.username);
-            form.append('email', values.email);
-            form.append('phoneNumber', values.phoneNumber);
             form.append('phoneNumber', professionValue);
             form.append('nasionality', nationalityValue);
 
@@ -177,17 +173,19 @@ const EditProfile = () => {
             }
 
             if (token) {
-                const {data} = await http(token).post('/profile', form, {
+                const {data} = await http(token).patch('/profile', form, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
                 setSuccessMessage(data.masssage);
                 console.log(data);
+                console.log(data.results.errors);
             }
         } catch (error) {
-            const message = error?.response?.data?.message;
-            console.log(message);
+            const message = error?.response?.data?.results?.errors;
+            console.log(error);
+
         }
     };
     return (
