@@ -1,4 +1,4 @@
-package com.demoandroidapp;
+package net.pbr.tixevent;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
