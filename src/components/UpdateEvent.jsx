@@ -158,7 +158,7 @@ const UpdateEvent = () => {
                 form.append('date', moment(date).format('DD-MM-YYYY'));
             }
             if (token) {
-                const {data} = await http(token).post('/events', form, {
+                const {data} = await http(token).post(`/events/${id}`, form, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },

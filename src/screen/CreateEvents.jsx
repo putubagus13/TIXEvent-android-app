@@ -69,7 +69,7 @@ const CreateEvents = () => {
         getEventManage();
     };
 
-    const doUpdate = (id) => {
+    const doUpdate = () => {
         setUpdate(!update);
         getEventManage();
     };
