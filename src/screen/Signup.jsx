@@ -8,6 +8,22 @@ import {Formik} from 'formik';
 import {asyncRegisterAction} from '../redux/actions/auth';
 import {clearMessage} from '../redux/reducers/auth';
 import {clearFormError} from '../redux/reducers/auth';
+import * as Yup from 'yup';
+import globalStyles from '../assets/globalStyles';
+
+const validationSchema = Yup.object({
+    fullName: Yup.string()
+        .min(3, 'Name invalid')
+        .required('Fullname cannot be empty'),
+    email: Yup.string()
+        .email('Email is invalid')
+        .required('Email cannot be empty'),
+    password: Yup.string().required('Password is invalid'),
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref('password'), null], 'Password must match')
+        .required('Confirm Password is invalid'),
+    checkbox: Yup.boolean().oneOf([true], 'You must agree to the terms'),
+});
 
 const Signup = () => {
     const dispatch = useDispatch();
@@ -51,42 +67,81 @@ const Signup = () => {
                         password: '',
                         confirmPassword: '',
                     }}
+                    validationSchema={validationSchema}
                     onSubmit={doRegister}>
-                    {({handleChange, handleBlur, handleSubmit, values}) => (
+                    {({
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        values,
+                        errors,
+                        touched,
+                    }) => (
                         <View style={styles.gapThree}>
                             {errorMessage && <Alert>{errorMessage}</Alert>}
                             {errorMsg && <Alert>{errorMsg}</Alert>}
-                            <Input
-                                placeholder="Fullname"
-                                placeholderTextColor="#9ca3af"
-                                onChangeText={handleChange('fullName')}
-                                onBlur={handleBlur('fullName')}
-                                value={values.fullName}
-                            />
-                            <Input
-                                placeholder="Email"
-                                keyboardType="email-address"
-                                placeholderTextColor="#9ca3af"
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                            />
-                            <Input
-                                placeholder="Password"
-                                secureTextEntry
-                                placeholderTextColor="#9ca3af"
-                                onChangeText={handleChange('password')}
-                                onBlur={handleBlur('password')}
-                                value={values.password}
-                            />
-                            <Input
-                                placeholder="Confirm Password"
-                                secureTextEntry
-                                placeholderTextColor="#9ca3af"
-                                onChangeText={handleChange('confirmPassword')}
-                                onBlur={handleBlur('confirmPassword')}
-                                value={values.confirmPassword}
-                            />
+                            <View>
+                                <Input
+                                    placeholder="Fullname"
+                                    placeholderTextColor="#9ca3af"
+                                    onChangeText={handleChange('fullName')}
+                                    onBlur={handleBlur('fullName')}
+                                    value={values.fullName}
+                                />
+                                {errors.fullName && touched.fullName && (
+                                    <Text style={globalStyles.colorError}>
+                                        {errors.fullName}
+                                    </Text>
+                                )}
+                            </View>
+                            <View>
+                                <Input
+                                    placeholder="Email"
+                                    keyboardType="email-address"
+                                    placeholderTextColor="#9ca3af"
+                                    onChangeText={handleChange('email')}
+                                    onBlur={handleBlur('email')}
+                                    value={values.email}
+                                />
+                                {errors.email && touched.email && (
+                                    <Text style={globalStyles.colorError}>
+                                        {errors.email}
+                                    </Text>
+                                )}
+                            </View>
+                            <View>
+                                <Input
+                                    placeholder="Password"
+                                    secureTextEntry
+                                    placeholderTextColor="#9ca3af"
+                                    onChangeText={handleChange('password')}
+                                    onBlur={handleBlur('password')}
+                                    value={values.password}
+                                />
+                                {errors.password && touched.password && (
+                                    <Text style={globalStyles.colorError}>
+                                        {errors.password}
+                                    </Text>
+                                )}
+                            </View>
+                            <View>
+                                <Input
+                                    placeholder="Confirm Password"
+                                    secureTextEntry
+                                    placeholderTextColor="#9ca3af"
+                                    onChangeText={handleChange(
+                                        'confirmPassword',
+                                    )}
+                                    onBlur={handleBlur('confirmPassword')}
+                                    value={values.confirmPassword}
+                                />
+                                {errors.confirmPassword &&
+                                    touched.confirmPassword && (
+                                        <Text style={globalStyles.colorError}>
+                                            {errors.confirmPassword}
+                                        </Text>
+                                    )}
+                            </View>
                             <TouchableOpacity onPress={handleSubmit}>
                                 <View style={styles.button}>
                                     <Text style={styles.buttonText}>

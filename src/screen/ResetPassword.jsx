@@ -6,6 +6,19 @@ import {Formik} from 'formik';
 import http from '../helpers/http';
 import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
+import * as Yup from 'yup';
+import globalStyles from '../assets/globalStyles';
+
+const validationSchema = Yup.object({
+    email: Yup.string()
+        .email('Email is invalid')
+        .required('Email cant be empty'),
+    code: Yup.string().required('code cant be empty'),
+    password: Yup.string().required('Password cant be empty'),
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref('password'), null], 'Password must match')
+        .required('Confirm Password is invalid'),
+});
 
 const ResetPassword = () => {
     const navigation = useNavigation();
@@ -50,8 +63,16 @@ const ResetPassword = () => {
                         password: '',
                         confirmPassword: '',
                     }}
-                    onSubmit={doReset}>
-                    {({handleChange, handleBlur, handleSubmit, values}) => (
+                    onSubmit={doReset}
+                    validationSchema={validationSchema}>
+                    {({
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        values,
+                        errors,
+                        touched,
+                    }) => (
                         <View style={styles.gapTwo}>
                             {errorMsg && <Alert>{errorMsg}</Alert>}
                             {successMsg && (
@@ -66,29 +87,50 @@ const ResetPassword = () => {
                                     </Text>
                                 </View>
                             )}
-                            <Input
-                                placeholder="Email"
-                                placeholderTextColor="#9ca3af"
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                            />
-                            <Input
-                                placeholder="Code"
-                                placeholderTextColor="#9ca3af"
-                                keyboardType="number-pad"
-                                onChangeText={handleChange('code')}
-                                onBlur={handleBlur('code')}
-                                value={values.code}
-                            />
-                            <Input
-                                placeholder="New Password"
-                                placeholderTextColor="#9ca3af"
-                                secureTextEntry
-                                onChangeText={handleChange('password')}
-                                onBlur={handleBlur('password')}
-                                value={values.password}
-                            />
+                            <View>
+                                <Input
+                                    placeholder="Email"
+                                    placeholderTextColor="#9ca3af"
+                                    onChangeText={handleChange('email')}
+                                    onBlur={handleBlur('email')}
+                                    value={values.email}
+                                />
+                                {errors.email && touched.email && (
+                                    <Text style={globalStyles.colorError}>
+                                        {errors.email}
+                                    </Text>
+                                )}
+                            </View>
+                            <View>
+                                <Input
+                                    placeholder="Code"
+                                    placeholderTextColor="#9ca3af"
+                                    keyboardType="number-pad"
+                                    onChangeText={handleChange('code')}
+                                    onBlur={handleBlur('code')}
+                                    value={values.code}
+                                />
+                                {errors.code && touched.code && (
+                                    <Text style={globalStyles.colorError}>
+                                        {errors.code}
+                                    </Text>
+                                )}
+                            </View>
+                            <View>
+                                <Input
+                                    placeholder="New Password"
+                                    placeholderTextColor="#9ca3af"
+                                    secureTextEntry
+                                    onChangeText={handleChange('password')}
+                                    onBlur={handleBlur('password')}
+                                    value={values.password}
+                                />
+                                {errors.password && touched.password && (
+                                    <Text style={globalStyles.colorError}>
+                                        {errors.password}
+                                    </Text>
+                                )}
+                            </View>
                             <Input
                                 placeholder="Confirm New Password"
                                 placeholderTextColor="#9ca3af"
@@ -97,6 +139,12 @@ const ResetPassword = () => {
                                 onBlur={handleBlur('confirmPassword')}
                                 value={values.confirmPassword}
                             />
+                            {errors.confirmPassword &&
+                                touched.confirmPassword && (
+                                    <Text style={globalStyles.colorError}>
+                                        {errors.confirmPassword}
+                                    </Text>
+                                )}
                             {successMsg && (
                                 <View style={styles.gapThree}>
                                     <Text style={styles.colorSecondary}>

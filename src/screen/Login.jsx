@@ -15,6 +15,15 @@ import {asyncLoginAction} from '../redux/actions/auth';
 import Alert from '../components/Alert';
 import {clearMessage} from '../redux/reducers/auth';
 import {clearFormError} from '../redux/reducers/auth';
+import * as Yup from 'yup';
+import globalStyles from '../assets/globalStyles';
+
+const validationSchema = Yup.object({
+    email: Yup.string()
+        .email('Email is invalid')
+        .required('Email cant be empty'),
+    password: Yup.string().required('Password cant be empty'),
+});
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -48,27 +57,49 @@ const Login = () => {
             <View>
                 <Formik
                     initialValues={{email: '', password: ''}}
+                    validationSchema={validationSchema}
                     onSubmit={doLogin}>
-                    {({handleChange, handleBlur, handleSubmit, values}) => (
+                    {({
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        values,
+                        errors,
+                        touched,
+                    }) => (
                         <View style={styles.form}>
                             {errorMessage && <Alert>{errorMessage}</Alert>}
                             {errorMsg && <Alert>{errorMsg}</Alert>}
-                            <Input
-                                placeholder="Email"
-                                keyboardType="email-address"
-                                placeholderTextColor="#9ca3af"
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                            />
-                            <Input
-                                placeholder="Password"
-                                placeholderTextColor="#9ca3af"
-                                secureTextEntry
-                                onChangeText={handleChange('password')}
-                                onBlur={handleBlur('password')}
-                                value={values.password}
-                            />
+                            <View>
+                                <Input
+                                    placeholder="Email"
+                                    keyboardType="email-address"
+                                    placeholderTextColor="#9ca3af"
+                                    onChangeText={handleChange('email')}
+                                    onBlur={handleBlur('email')}
+                                    value={values.email}
+                                />
+                                {errors.email && touched.email && (
+                                    <Text style={globalStyles.colorError}>
+                                        {errors.email}
+                                    </Text>
+                                )}
+                            </View>
+                            <View>
+                                <Input
+                                    placeholder="Password"
+                                    placeholderTextColor="#9ca3af"
+                                    secureTextEntry
+                                    onChangeText={handleChange('password')}
+                                    onBlur={handleBlur('password')}
+                                    value={values.password}
+                                />
+                                {errors.password && touched.password && (
+                                    <Text style={globalStyles.colorError}>
+                                        {errors.password}
+                                    </Text>
+                                )}
+                            </View>
                             <TouchableOpacity
                                 onPress={() =>
                                     navigation.navigate('ForgotPassword')
