@@ -19,14 +19,20 @@ import http from '../helpers/http';
 import Alert from './Alert';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
+import * as Yup from 'yup';
+import globalStyles from '../assets/globalStyles';
 
-const CrtEvent = () => {
+const validationSchema = Yup.object({
+    title: Yup.string().min(5, 'Please enter at least 5 letters'),
+    desciption: Yup.string().min(500, 'Please enter at least 100 words'),
+});
+
+const UpdateEvent = () => {
     const token = useSelector(state => state.auth.token);
     // const [dateEvent, setDateEvent] = React.useState(new Date());
     // const [openDate, setOpenDate] = React.useState(false);
     const [picture, setPicture] = React.useState(null);
     const [errorMessage, setErrorMesage] = React.useState('');
-    const [errorMsg, setErrorMsg] = React.useState('');
     const [successMessage, setSuccessMessage] = React.useState('');
     const [open, setOpen] = React.useState(false);
     const [openSelect, setOpenSelect] = React.useState(false);
@@ -112,19 +118,19 @@ const CrtEvent = () => {
 
     const createEvent = async values => {
         try {
-            setErrorMesage('');
+            // setErrorMesage('');
             // successMessage('');
             // errorMsg('');
             // console.log(categoryValue, locationValue, picture, moment(date).format('DD-MM-YYYY'));
-            if (values.title === '') {
-                setErrorMesage('Title cannot be empty');
-            } else if (!locationValue) {
-                setErrorMesage('Location cannot be empty');
-            } else if (!categoryValue) {
-                setErrorMesage('category cannot be empty');
-            } else if (!values.desciption) {
-                setErrorMesage('Description cannot be empty');
-            }
+            // if (values.title === '') {
+            //     setErrorMesage('Title cannot be empty');
+            // } else if (!locationValue) {
+            //     setErrorMesage('Location cannot be empty');
+            // } else if (!categoryValue) {
+            //     setErrorMesage('category cannot be empty');
+            // } else if (!values.desciption) {
+            //     setErrorMesage('Description cannot be empty');
+            // }
             const form = new FormData();
             Object.keys(values).forEach(key => {
                 if (values[key]) {
@@ -142,9 +148,15 @@ const CrtEvent = () => {
                             : picture.uri.replace('file://', ''),
                 });
             }
-            form.append('categoryId', categoryValue);
-            form.append('cityId', locationValue);
-            form.append('date', moment(date).format('DD-MM-YYYY'));
+            if (categoryValue) {
+                form.append('categoryId', categoryValue);
+            }
+            if (locationValue) {
+                form.append('cityId', locationValue);
+            }
+            if (date) {
+                form.append('date', moment(date).format('DD-MM-YYYY'));
+            }
             if (token) {
                 const {data} = await http(token).post('/events', form, {
                     headers: {
@@ -158,15 +170,7 @@ const CrtEvent = () => {
         } catch (error) {
             const message = error?.response?.data?.message;
             console.log(message);
-            // if (message) {
-            //     setErrorMsg(message);
-            // }
         }
-        // console.log(data);
-        // setSuccessMessage(data.result);
-        // for (var pair of form.entries()) {
-        //     console.log(pair[0] + ', ' + pair[1]);
-        // }
     };
 
     return (
@@ -177,12 +181,19 @@ const CrtEvent = () => {
                         title: '',
                         desciption: '',
                     }}
+                    validationSchema={validationSchema}
                     onSubmit={createEvent}>
-                    {({handleChange, handleBlur, handleSubmit, values}) => (
+                    {({
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        values,
+                        errors,
+                        touched,
+                    }) => (
                         <View style={styles.scrolHight}>
-                            <Text style={styles.text}>New Event</Text>
+                            <Text style={styles.text}>Update Event</Text>
                             {errorMessage && <Alert>{errorMessage}</Alert>}
-                            {errorMsg && <Alert>{errorMsg}</Alert>}
                             {successMessage && (
                                 <View style={styles.border}>
                                     <Icon
@@ -234,6 +245,11 @@ const CrtEvent = () => {
                                         onBlur={handleBlur('title')}
                                         value={values.title}
                                     />
+                                    {errors.title && touched.title && (
+                                        <Text style={globalStyles.colorError}>
+                                            {errors.title}
+                                        </Text>
+                                    )}
                                 </View>
                                 <View>
                                     <Text style={styles.nameInput}>
@@ -338,6 +354,13 @@ const CrtEvent = () => {
                                         onBlur={handleBlur('desciption')}
                                         value={values.desciption}
                                     />
+                                    {errors.desciption &&
+                                        touched.desciption && (
+                                            <Text
+                                                style={globalStyles.colorError}>
+                                                {errors.desciption}
+                                            </Text>
+                                        )}
                                 </View>
                                 <TouchableOpacity onPress={handleSubmit}>
                                     <View style={styles.button}>
@@ -459,4 +482,4 @@ const styles = StyleSheet.create({
     textError: {color: 'white', fontWeight: '500'},
 });
 
-export default CrtEvent;
+export default UpdateEvent;

@@ -5,6 +5,14 @@ import Input from '../components/Input';
 import {Formik} from 'formik';
 import Alert from '../components/Alert';
 import http from '../helpers/http';
+import * as Yup from 'yup';
+import globalStyles from '../assets/globalStyles';
+
+const validationSchema = Yup.object({
+    email: Yup.string()
+        .email('Email is invalid')
+        .required('Email cant be empty'),
+});
 
 const ForgotPassword = () => {
     const [errorMsg, setErrorMsg] = React.useState('');
@@ -40,18 +48,35 @@ const ForgotPassword = () => {
                 </Text>
             </View>
             <View>
-                <Formik initialValues={{email: ''}} onSubmit={doRequest}>
-                    {({handleChange, handleBlur, handleSubmit, values}) => (
+                <Formik
+                    initialValues={{email: ''}}
+                    validationSchema={validationSchema}
+                    onSubmit={doRequest}>
+                    {({
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        values,
+                        errors,
+                        touched,
+                    }) => (
                         <View style={styles.form}>
                             {errorMsg && <Alert>{errorMsg}</Alert>}
-                            <Input
-                                placeholder="Email"
-                                keyboardType="email-address"
-                                placeholderTextColor="#9ca3af"
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                            />
+                            <View style={{gap: 5}}>
+                                <Input
+                                    placeholder="Email"
+                                    keyboardType="email-address"
+                                    placeholderTextColor="#9ca3af"
+                                    onChangeText={handleChange('email')}
+                                    onBlur={handleBlur('email')}
+                                    value={values.email}
+                                />
+                                {errors.email && touched.email && (
+                                    <Text style={globalStyles.colorError}>
+                                        {errors.email}
+                                    </Text>
+                                )}
+                            </View>
                             <TouchableOpacity onPress={handleSubmit}>
                                 <View style={styles.buttonView}>
                                     <Text style={styles.buttonText}>Send</Text>

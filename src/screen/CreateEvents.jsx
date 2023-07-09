@@ -13,23 +13,71 @@ import http from '../helpers/http';
 import {useSelector} from 'react-redux';
 import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import globalStyles from '../assets/globalStyles';
 import CrtEvent from '../components/CrtEvent';
 import Header from '../components/Header';
 import moment from 'moment';
+import UpdateEvent from '../components/UpdateEvent';
 
 const CreateEvents = () => {
     const navigation = useNavigation();
     const [create, setCreate] = React.useState(false);
+    const [update, setUpdate] = React.useState(false);
     const [events, setEvents] = React.useState([]);
     const token = useSelector(state => state.auth.token);
-    console.log(events);
+
+    const getEventManage = React.useCallback(async () => {
+        const {data} = await http(token).get('/events/manage?limit=10');
+        setEvents(data.results);
+    }, [token]);
+
+    React.useEffect(() => {
+        getEventManage();
+    }, [getEventManage]);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchEvent = async () => {
+                try {
+                    const {data} = await http(token).get('/events/manage');
+                    console.log(data.results);
+                    setEvents(data.results);
+                } catch (error) {
+                    const message = error?.response?.data?.message;
+                    if (message) {
+                        console.log(message);
+                    }
+                }
+            };
+            fetchEvent();
+        }, [token]),
+    );
+
+    const deleteEventsManage = async id => {
+        try {
+            await http(token).delete(`/events/manage/${id}`);
+            getEventManage();
+        } catch (error) {
+            const message = error?.response?.data?.message;
+            console.log(message);
+        }
+    };
+
+    const doCreate = () => {
+        setCreate(!create);
+        getEventManage();
+    };
+
+    const doUpdate = (id) => {
+        setUpdate(!update);
+        getEventManage();
+    };
 
     React.useEffect(() => {
         async function getEventMenage() {
             try {
-                const {data} = await http(token).get('/events/manage?limit=10');
+                const {data} = await http(token).get('/events/manage');
                 console.log(data);
                 setEvents(data.results);
             } catch (error) {
@@ -58,100 +106,103 @@ const CreateEvents = () => {
                     </TouchableOpacity>
                 )}
                 {create !== false && (
-                    <TouchableOpacity onPress={() => setCreate(!create)}>
+                    <TouchableOpacity onPress={doCreate}>
+                        <Text style={styles.text}>Cancle</Text>
+                    </TouchableOpacity>
+                )}
+                {update !== false && (
+                    <TouchableOpacity onPress={doUpdate}>
                         <Text style={styles.text}>Cancle</Text>
                     </TouchableOpacity>
                 )}
                 <View>
                     {create && <CrtEvent />}
+                    {update && <UpdateEvent />}
                     {/* <View style={styles.bookingWrap}>
                         <Text style={styles.heading}>Create new event</Text>
                         <Text style={styles.paragraf}>
                             Do a create event to share the event that was shown
                         </Text>
                     </View> */}
-                    {create === false && (
-                        <View>
+                    {create === false && update === false && (
+                        <View style={styles.mainContain}>
                             {events.map(event => {
                                 return (
                                     <View
                                         key={`event-${event.id}`}
-                                        style={styles.mainContain}>
-                                        <View style={styles.conten}>
-                                            <View style={styles.eventWrap}>
-                                                <View>
-                                                    <Text
-                                                        style={styles.dateText}>
-                                                        {moment(
-                                                            event.date,
-                                                        ).format('DD')}
-                                                    </Text>
-                                                    <Text
-                                                        style={styles.paragraf}>
-                                                        {moment(
-                                                            event.date,
-                                                        ).format('ddd')}
-                                                    </Text>
-                                                </View>
-                                                <TouchableOpacity>
-                                                    <Icon
-                                                        style={styles.icon}
-                                                        name="heart"
-                                                        size={22}
-                                                    />
-                                                </TouchableOpacity>
-                                            </View>
-                                            <View style={styles.event}>
-                                                <Text style={styles.titleText}>
-                                                    {event.title}
+                                        style={styles.conten}>
+                                        <View style={styles.eventWrap}>
+                                            <View>
+                                                <Text style={styles.dateText}>
+                                                    {moment(event.date).format(
+                                                        'DD',
+                                                    )}
                                                 </Text>
-                                                <View
+                                                <Text style={styles.paragraf}>
+                                                    {moment(event.date).format(
+                                                        'ddd',
+                                                    )}
+                                                </Text>
+                                            </View>
+                                            <TouchableOpacity>
+                                                <Icon
+                                                    style={styles.icon}
+                                                    name="heart"
+                                                    size={22}
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.event}>
+                                            <Text style={styles.titleText}>
+                                                {event.title}
+                                            </Text>
+                                            <View style={styles.eventLocation}>
+                                                <Text
                                                     style={
-                                                        styles.eventLocation
+                                                        globalStyles.colorNeutral
+                                                    }>
+                                                    {event.location}
+                                                </Text>
+                                                <Text
+                                                    style={
+                                                        globalStyles.colorNeutral
+                                                    }>
+                                                    {moment(event.date).format(
+                                                        'MMMM Do YYYY, h:mm a',
+                                                    )}
+                                                </Text>
+                                            </View>
+                                            <View style={styles.option}>
+                                                <TouchableOpacity>
+                                                    <Text
+                                                        style={
+                                                            globalStyles.colorAccent
+                                                        }>
+                                                        Detail
+                                                    </Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    onPress={doUpdate}>
+                                                    <Text
+                                                        style={
+                                                            globalStyles.colorAccent
+                                                        }>
+                                                        Update
+                                                    </Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    onPress={() =>
+                                                        deleteEventsManage(
+                                                            event.id,
+                                                        )
                                                     }>
                                                     <Text
                                                         style={
-                                                            globalStyles.colorNeutral
+                                                            globalStyles.colorAccent
                                                         }>
-                                                        {event.location}
+                                                        Delete
                                                     </Text>
-                                                    <Text
-                                                        style={
-                                                            globalStyles.colorNeutral
-                                                        }>
-                                                        {moment(
-                                                            event.date,
-                                                        ).format(
-                                                            'MMMM Do YYYY, h:mm a',
-                                                        )}
-                                                    </Text>
-                                                </View>
-                                                <View style={styles.option}>
-                                                    <TouchableOpacity>
-                                                        <Text
-                                                            style={
-                                                                globalStyles.colorAccent
-                                                            }>
-                                                            Detail
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                    <TouchableOpacity>
-                                                        <Text
-                                                            style={
-                                                                globalStyles.colorAccent
-                                                            }>
-                                                            Update
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                    <TouchableOpacity>
-                                                        <Text
-                                                            style={
-                                                                globalStyles.colorAccent
-                                                            }>
-                                                            Delete
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                </View>
+                                                </TouchableOpacity>
                                             </View>
                                         </View>
                                     </View>

@@ -3,7 +3,7 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 
-const Landingpage = () => {
+const SplashScreen = () => {
     const navigation = useNavigation();
     const token = useSelector(state => state.auth.token);
     React.useEffect(() => {
@@ -83,4 +83,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Landingpage;
+export default SplashScreen;

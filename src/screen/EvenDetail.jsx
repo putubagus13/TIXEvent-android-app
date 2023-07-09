@@ -8,11 +8,27 @@ import {
 } from 'react-native';
 import React from 'react';
 import Header from '../components/Header';
-import {useSelector} from 'react-redux';
 import moment from 'moment';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import http from '../helpers/http';
 
 const EvenDetail = () => {
-    const events = useSelector(state => state.eventsDetail.data);
+    const navigation = useNavigation();
+    const route = useRoute();
+    const {id} = route.params;
+    const [events, setEvents] = React.useState({});
+
+    const doBooking = id => {
+        navigation.navigate('Booking', {id});
+    };
+
+    React.useEffect(() => {
+        const getEventData = async () => {
+            const {data} = await http().get(`/events/detail/${id}`);
+            setEvents(data.results);
+        };
+        getEventData(id);
+    }, [id]);
     return (
         <View style={styles.wrapMain}>
             <Header>Event Detail</Header>
@@ -32,13 +48,9 @@ const EvenDetail = () => {
                             }}
                         />
                     )}
-                    {/* <Image
-                        source={require('../assets/Bitmap1.png')}
-                        style={styles.imageBanner}
-                    /> */}
                 </View>
                 <View style={styles.bannerTextWrap}>
-                    <Text style={styles.textTittle}>{events?.title}</Text>
+                    <Text style={styles.textTittle}>{events.title}</Text>
                     <View style={styles.wrapLocationDate}>
                         <Text style={styles.textLocation}>
                             {events.location}
@@ -62,7 +74,7 @@ const EvenDetail = () => {
                         source={require('../assets/Rectangle.png')}
                         style={styles.ImageLocation}
                     />
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => doBooking(events.id)}>
                         <View style={styles.button}>
                             <Text style={styles.textButton}>Buy Tickets</Text>
                         </View>
