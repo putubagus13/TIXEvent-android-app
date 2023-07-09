@@ -1,39 +1,39 @@
 {
-  "project_info": {
-    "project_number": "453184759860",
-    "project_id": "wetix-app",
-    "storage_bucket": "wetix-app.appspot.com"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:453184759860:android:be73626804feca144d0261",
-        "android_client_info": {
-          "package_name": "com.demoandroidapp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "453184759860-te01g6a1b6p8elikit8p27ba057f76dp.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyB0ylYJ0sk6-FsrLJYHRX0mMzWEgyDhDII"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "453184759860-te01g6a1b6p8elikit8p27ba057f76dp.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+    "project_info": {
+      "project_number": "453184759860",
+      "project_id": "wetix-app",
+      "storage_bucket": "wetix-app.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:453184759860:android:38c1229bfa26f2e14d0261",
+          "android_client_info": {
+            "package_name": "net.pbr.tixevent"
+          }
+        },
+        "oauth_client": [
+          {
+            "client_id": "453184759860-te01g6a1b6p8elikit8p27ba057f76dp.apps.googleusercontent.com",
+            "client_type": 3
+          }
+        ],
+        "api_key": [
+          {
+            "current_key": "AIzaSyB0ylYJ0sk6-FsrLJYHRX0mMzWEgyDhDII"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": [
+              {
+                "client_id": "453184759860-te01g6a1b6p8elikit8p27ba057f76dp.apps.googleusercontent.com",
+                "client_type": 3
+              }
+            ]
+          }
         }
       }
-    }
-  ],
-  "configuration_version": "1"
-}
+    ],
+    "configuration_version": "1"
+  }
