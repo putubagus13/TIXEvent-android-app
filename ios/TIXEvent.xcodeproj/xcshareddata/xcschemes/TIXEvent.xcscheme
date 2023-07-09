@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "demoandroidapp.app"
-               BlueprintName = "demoandroidapp"
-               ReferencedContainer = "container:demoandroidapp.xcodeproj">
+               BuildableName = "TIXEvent.app"
+               BlueprintName = "TIXEvent"
+               ReferencedContainer = "container:TIXEvent.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "demoandroidappTests.xctest"
-               BlueprintName = "demoandroidappTests"
-               ReferencedContainer = "container:demoandroidapp.xcodeproj">
+               BuildableName = "TIXEventTests.xctest"
+               BlueprintName = "TIXEventTests"
+               ReferencedContainer = "container:TIXEvent.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "demoandroidapp.app"
-            BlueprintName = "demoandroidapp"
-            ReferencedContainer = "container:demoandroidapp.xcodeproj">
+            BuildableName = "TIXEvent.app"
+            BlueprintName = "TIXEvent"
+            ReferencedContainer = "container:TIXEvent.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "demoandroidapp.app"
-            BlueprintName = "demoandroidapp"
-            ReferencedContainer = "container:demoandroidapp.xcodeproj">
+            BuildableName = "TIXEvent.app"
+            BlueprintName = "TIXEvent"
+            ReferencedContainer = "container:TIXEvent.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
