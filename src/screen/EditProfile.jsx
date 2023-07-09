@@ -11,13 +11,13 @@ import React from 'react';
 import Input from '../components/Input';
 import http from '../helpers/http';
 import {useSelector} from 'react-redux';
-import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
 import {Formik} from 'formik';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import globalStyles from '../assets/globalStyles';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Header from '../components/Header';
+import {useFocusEffect} from '@react-navigation/native';
 
 const EditProfile = () => {
     const [editFullname, setEditFullname] = React.useState(false);
@@ -33,6 +33,7 @@ const EditProfile = () => {
     const [picture, setPicture] = React.useState(null);
     const [successMessage, setSuccessMessage] = React.useState('');
     const [edit, setEdit] = React.useState(false);
+    const [gender, setGender] = React.useState('0');
     const [profession, setProfession] = React.useState([
         {
             label: 'Developer',
@@ -75,21 +76,36 @@ const EditProfile = () => {
     const [nationalityValue, setNationalityValue] = React.useState(null);
     const [professionValue, setProfessionValue] = React.useState(null);
 
-    React.useEffect(() => {
-        async function getProfileUser() {
-            try {
-                const {data} = await http(token).get('/profile');
-                setProfile(data.results);
-                console(data.results);
-            } catch (error) {
-                const message = error?.response?.data?.message;
-                if (message) {
-                    console.log(message);
+    const chooseGender = value => {
+        setGender(value);
+    };
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchProfile = async () => {
+                try {
+                    const {data} = await http(token).get('/profile');
+                    console.log(data.results);
+                    setProfile(data.results);
+                } catch (error) {
+                    const message = error?.response?.data?.message;
+                    if (message) {
+                        console.log(message);
+                    }
                 }
-            }
-        }
-        getProfileUser();
+            };
+            fetchProfile();
+        }, [token]),
+    );
+
+    const getProfileUser = React.useCallback(async () => {
+        const {data} = await http(token).get('/profile');
+        setProfile(data.results);
     }, [token]);
+
+    React.useEffect(() => {
+        getProfileUser();
+    }, [getProfileUser]);
 
     const cancleEdit = () => {
         setEditFullname(false);
@@ -142,15 +158,6 @@ const EditProfile = () => {
     };
 
     const doUpdateProfile = async values => {
-        console.log(
-            values.fullName,
-            values.username,
-            values.email,
-            values.phoneNumber,
-            professionValue,
-            nationalityValue,
-            picture,
-        );
         try {
             const form = new FormData();
             Object.keys(values).forEach(key => {
@@ -158,18 +165,24 @@ const EditProfile = () => {
                     form.append(key, values[key]);
                 }
             });
-            form.append('phoneNumber', professionValue);
-            form.append('nasionality', nationalityValue);
-
             if (picture) {
                 form.append('picture', {
                     name: picture.fileName,
                     type: picture.type,
                     uri:
                         Platform.OS === 'android'
-                            ? picture.uri.replace('file://', ' ')
-                            : picture.uri,
+                            ? picture.uri
+                            : picture.uri.replace('file://', ''),
                 });
+            }
+            if (professionValue) {
+                form.append('phoneNumber', professionValue);
+            }
+            if (nationalityValue) {
+                form.append('nasionality', nationalityValue);
+            }
+            if (gender) {
+                form.append('gender', gender);
             }
 
             if (token) {
@@ -179,13 +192,23 @@ const EditProfile = () => {
                     },
                 });
                 setSuccessMessage(data.masssage);
-                console.log(data);
-                console.log(data.results.errors);
             }
+            getProfileUser();
+            setEditFullname(false);
+            setEditEmail(false);
+            setEditPhone(false);
+            setEditProfession(false);
+            setEditNationality(false);
+            setEditGender(false);
+            setEditBirthdayDate(false);
+            setEditUsername(false);
+            setPicture(null);
+            setEdit(false);
         } catch (error) {
             const message = error?.response?.data?.results?.errors;
-            console.log(error);
-
+            if (message) {
+                console.log(message);
+            }
         }
     };
     return (
@@ -210,6 +233,12 @@ const EditProfile = () => {
                                 />
                             )}
                             {picture && !profile.picture && (
+                                <Image
+                                    style={styles.image}
+                                    source={{uri: picture.uri}}
+                                />
+                            )}
+                            {picture && profile.picture && (
                                 <Image
                                     style={styles.image}
                                     source={{uri: picture.uri}}
@@ -466,20 +495,93 @@ const EditProfile = () => {
                                     </Text>
                                     <View style={styles.flexDerection}>
                                         {editGender && (
-                                            <Input
-                                                // placeholder="Password"
-                                                placeholderTextColor="#9ca3af"
-                                                onChangeText={handleChange(
-                                                    'gender',
-                                                )}
-                                                onBlur={handleBlur('gender')}
-                                                value={values.gender}
-                                            />
+                                            <View
+                                                style={{
+                                                    flexDirection: 'row',
+                                                    gap: 20,
+                                                }}>
+                                                <View
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        gap: 10,
+                                                        alignItems: 'center',
+                                                    }}>
+                                                    <View
+                                                        style={
+                                                            styles.borderRadio
+                                                        }>
+                                                        <TouchableOpacity
+                                                            style={[
+                                                                styles.radioButton,
+                                                                gender ===
+                                                                    '0' &&
+                                                                    styles.radioButtonSelected,
+                                                            ]}
+                                                            onPress={() =>
+                                                                chooseGender(
+                                                                    '0',
+                                                                )
+                                                            }
+                                                        />
+                                                    </View>
+                                                    <Text
+                                                        style={{
+                                                            color: '#003d3b',
+                                                        }}>
+                                                        Male
+                                                    </Text>
+                                                </View>
+                                                <View
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        gap: 10,
+                                                        alignItems: 'center',
+                                                    }}>
+                                                    <View
+                                                        style={
+                                                            styles.borderRadio
+                                                        }>
+                                                        <TouchableOpacity
+                                                            style={[
+                                                                styles.radioButton,
+                                                                gender ===
+                                                                    '1' &&
+                                                                    styles.radioButtonSelected,
+                                                            ]}
+                                                            onPress={() =>
+                                                                chooseGender(
+                                                                    '1',
+                                                                )
+                                                            }
+                                                        />
+                                                    </View>
+                                                    <Text
+                                                        style={{
+                                                            color: '#003d3b',
+                                                        }}>
+                                                        Fimale
+                                                    </Text>
+                                                </View>
+                                            </View>
                                         )}
                                         {!editGender && (
-                                            <Text style={styles.colorNeutral}>
-                                                Male
-                                            </Text>
+                                            <>
+                                                {profile.gender === false ? (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        Male
+                                                    </Text>
+                                                ) : (
+                                                    <Text
+                                                        style={
+                                                            styles.colorNeutral
+                                                        }>
+                                                        Fimale
+                                                    </Text>
+                                                )}
+                                            </>
                                         )}
                                         <TouchableOpacity
                                             onPress={() =>
@@ -674,6 +776,32 @@ const styles = StyleSheet.create({
     colorAccent: {color: '#f59e0b'},
     colorNeutral: {color: '#9ca3af'},
     colorError: {color: '#e11d48'},
+
+    radioButton: {
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        backgroundColor: '#FFF',
+    },
+
+    radioButtonSelected: {
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        backgroundColor: '#006967',
+    },
+
+    borderRadio: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#9ca3af',
+        padding: 5,
+        overflow: 'hidden',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 
     gap: {gap: 30},
 

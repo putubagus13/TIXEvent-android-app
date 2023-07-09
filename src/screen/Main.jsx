@@ -22,9 +22,14 @@ import Signup from './Signup';
 import Login from './Login';
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
-import Landingpage from './Landingpage';
+import Landingpage from './SplashScreen';
 import CreateEvents from './CreateEvents';
 import Touchid from './Touchid';
+import SpalshScreen from './SplashScreen';
+import SplashScreen from './SplashScreen';
+import Booking from './Booking';
+import Payment from './Payment';
+import DetailReservation from './DetailReservation';
 
 const AuthStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -58,8 +63,8 @@ function DrawerComponent() {
             }}
             drawerContent={props => <CustomDrawerContent {...props} />}>
             <Drawer.Screen
-                name="Landingpage"
-                component={Landingpage}
+                name="SplashScreen"
+                component={SplashScreen}
                 options={{drawerLabel: () => null}}
             />
             <Drawer.Screen
@@ -118,7 +123,11 @@ function DrawerComponent() {
                 component={CreateEvents}
                 options={{
                     drawerIcon: ({color, size}) => (
-                        <FeatherIcon name="plus-circle" color={color} size={size} />
+                        <FeatherIcon
+                            name="plus-circle"
+                            color={color}
+                            size={size}
+                        />
                     ),
                     drawerLabel: 'Create Event',
                 }}
@@ -143,15 +152,26 @@ function DrawerComponent() {
                     drawerLabel: 'My Wishlist',
                 }}
             />
+
             <Drawer.Screen
                 name="EvenDetail"
                 component={EvenDetail}
-                options={{
-                    // drawerIcon: ({color, size}) => (
-                    //     <FeatherIcon name="heart" color="white" size={size} />
-                    // ),
-                    drawerLabel: '',
-                }}
+                options={{drawerLabel: () => null}}
+            />
+            <Drawer.Screen
+                name="Booking"
+                component={Booking}
+                options={{drawerLabel: () => null}}
+            />
+            <Drawer.Screen
+                name="Payment"
+                component={Payment}
+                options={{drawerLabel: () => null}}
+            />
+            <Drawer.Screen
+                name="DetailReservation"
+                component={DetailReservation}
+                options={{drawerLabel: () => null}}
             />
         </Drawer.Navigator>
     );
@@ -164,8 +184,8 @@ const Main = () => {
             {!token && (
                 <AuthStack.Navigator screenOptions={{headerShown: false}}>
                     <AuthStack.Screen
-                        name="Landingpage"
-                        component={Landingpage}
+                        name="SplashScreen"
+                        component={SplashScreen}
                     />
                     <AuthStack.Screen name="Signup" component={Signup} />
                     <AuthStack.Screen name="Login" component={Login} />

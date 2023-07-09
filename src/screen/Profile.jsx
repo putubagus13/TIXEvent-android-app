@@ -13,13 +13,31 @@ import http from '../helpers/http';
 import {useSelector} from 'react-redux';
 import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import Header from '../components/Header';
 
 const Profile = () => {
     const navigation = useNavigation();
     const token = useSelector(state => state.auth.token);
     const [profile, setProfile] = React.useState({});
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchProfile = async () => {
+                try {
+                    const {data} = await http(token).get('/profile');
+                    console.log(data.results);
+                    setProfile(data.results);
+                } catch (error) {
+                    const message = error?.response?.data?.message;
+                    if (message) {
+                        console.log(message);
+                    }
+                }
+            };
+            fetchProfile();
+        }, [token]),
+    );
 
     React.useEffect(() => {
         async function getProfileUser() {

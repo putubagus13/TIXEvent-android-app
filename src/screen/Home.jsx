@@ -32,10 +32,8 @@ const Home = () => {
         console.log(data);
     }, [token, deviceToken]);
 
-    const eventDetail = items => {
-        dispatch(setEvent(items));
-        navigation.navigate('EvenDetail');
-        console.log(items);
+    const eventDetail = id => {
+        navigation.navigate('EvenDetail', {id});
     };
 
     async function getDataEvent(name, searchEvent) {
@@ -70,44 +68,44 @@ const Home = () => {
             }
         }
         getCategory();
-    }, [searchEvent]);
+    }, [searchEvent, saveToken]);
 
     return (
-        <View style={styles.mainWrap}>
-            <Header>Home</Header>
-            <TextInput
-                onChangeText={setSearchEvent}
-                placeholder="Search"
-                placeholderTextColor="#9ca3af"
-                style={styles.search}
-            />
-            <View style={styles.containerOne}>
-                <View name="date" style={styles.dateWrap}>
-                    <View style={styles.date}>
-                        <Text>13</Text>
-                        <Text style={styles.dayPadding}>Mon</Text>
+        <ScrollView showsVerticalScrollIndicator={true}>
+            <View style={styles.mainWrap}>
+                <Header>Home</Header>
+                <TextInput
+                    onChangeText={setSearchEvent}
+                    placeholder="Search"
+                    placeholderTextColor="#9ca3af"
+                    style={styles.search}
+                />
+                <View style={styles.containerOne}>
+                    <View name="date" style={styles.dateWrap}>
+                        <View style={styles.date}>
+                            <Text>13</Text>
+                            <Text style={styles.dayPadding}>Mon</Text>
+                        </View>
+                        <View style={styles.date}>
+                            <Text>14</Text>
+                            <Text style={styles.dayPadding}>Tue</Text>
+                        </View>
+                        <View style={styles.dateSelect}>
+                            <Text style={styles.colorDateSelect}>15</Text>
+                            <Text style={styles.colorDaySelect}>Wen</Text>
+                            <View style={styles.dot} />
+                        </View>
+                        <View style={styles.date}>
+                            <Text>16</Text>
+                            <Text style={styles.dayPadding}>Thu</Text>
+                        </View>
+                        <View style={styles.date}>
+                            <Text>17</Text>
+                            <Text style={styles.dayPadding}>Fri</Text>
+                        </View>
+                        <View />
                     </View>
-                    <View style={styles.date}>
-                        <Text>14</Text>
-                        <Text style={styles.dayPadding}>Tue</Text>
-                    </View>
-                    <View style={styles.dateSelect}>
-                        <Text style={styles.colorDateSelect}>15</Text>
-                        <Text style={styles.colorDaySelect}>Wen</Text>
-                        <View style={styles.dot} />
-                    </View>
-                    <View style={styles.date}>
-                        <Text>16</Text>
-                        <Text style={styles.dayPadding}>Thu</Text>
-                    </View>
-                    <View style={styles.date}>
-                        <Text>17</Text>
-                        <Text style={styles.dayPadding}>Fri</Text>
-                    </View>
-                    <View />
-                </View>
-                <View style={styles.scrollVertical}>
-                    <ScrollView showsVerticalScrollIndicator={true}>
+                    <View style={styles.scrollVertical}>
                         <View name="main-content" style={styles.main}>
                             <View style={styles.bannerWrap}>
                                 <Text style={styles.textHeadding}>
@@ -144,14 +142,14 @@ const Home = () => {
                                         return (
                                             <TouchableOpacity
                                                 onPress={() =>
-                                                    eventDetail(event)
+                                                    eventDetail(event.id)
                                                 }
                                                 key={`events-${event.id}`}>
                                                 <View
                                                     style={
                                                         styles.bannerContainer
                                                     }>
-                                                    {!events.picture && (
+                                                    {!events && (
                                                         <Image
                                                             style={
                                                                 styles.banner
@@ -159,13 +157,13 @@ const Home = () => {
                                                             source={require('../assets/Bitmap.png')}
                                                         />
                                                     )}
-                                                    {events.picture && (
+                                                    {events && (
                                                         <Image
                                                             style={
                                                                 styles.banner
                                                             }
                                                             source={{
-                                                                uri: events.picture,
+                                                                uri: event.picture,
                                                             }}
                                                         />
                                                     )}
@@ -535,10 +533,10 @@ const Home = () => {
                                 </View>
                             </View>
                         </View>
-                    </ScrollView>
+                    </View>
                 </View>
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
@@ -691,9 +689,9 @@ const styles = StyleSheet.create({
     },
 
     banner: {
-        objectFit: 'contain',
-        width: 'auto',
-        height: 300,
+        objectFit: 'cover',
+        width: '100%',
+        height: '100%',
         borderRadius: 20,
     },
 
