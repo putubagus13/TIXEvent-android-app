@@ -27,12 +27,9 @@ const validationSchema = Yup.object({
     desciption: Yup.string().min(500, 'Please enter at least 100 words'),
 });
 
-const UpdateEvent = () => {
+const UpdateEvent = ({idUpdate}) => {
     const token = useSelector(state => state.auth.token);
-    // const [dateEvent, setDateEvent] = React.useState(new Date());
-    // const [openDate, setOpenDate] = React.useState(false);
     const [picture, setPicture] = React.useState(null);
-    const [errorMessage, setErrorMesage] = React.useState('');
     const [successMessage, setSuccessMessage] = React.useState('');
     const [open, setOpen] = React.useState(false);
     const [openSelect, setOpenSelect] = React.useState(false);
@@ -42,6 +39,7 @@ const UpdateEvent = () => {
     const [category, setcategory] = React.useState([]);
     const [locations, setLocations] = React.useState([]);
     const [date, setDate] = React.useState(new Date());
+    console.log(successMessage);
 
     React.useEffect(() => {
         const getCategories = async () => {
@@ -118,19 +116,6 @@ const UpdateEvent = () => {
 
     const createEvent = async values => {
         try {
-            // setErrorMesage('');
-            // successMessage('');
-            // errorMsg('');
-            // console.log(categoryValue, locationValue, picture, moment(date).format('DD-MM-YYYY'));
-            // if (values.title === '') {
-            //     setErrorMesage('Title cannot be empty');
-            // } else if (!locationValue) {
-            //     setErrorMesage('Location cannot be empty');
-            // } else if (!categoryValue) {
-            //     setErrorMesage('category cannot be empty');
-            // } else if (!values.desciption) {
-            //     setErrorMesage('Description cannot be empty');
-            // }
             const form = new FormData();
             Object.keys(values).forEach(key => {
                 if (values[key]) {
@@ -155,16 +140,19 @@ const UpdateEvent = () => {
                 form.append('cityId', locationValue);
             }
             if (date) {
-                form.append('date', moment(date).format('DD-MM-YYYY'));
+                form.append('date', moment(date).format('YYYY-MM-DD'));
             }
             if (token) {
-                const {data} = await http(token).post(`/events/${id}`, form, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
+                const {data} = await http(token).patch(
+                    `/events/${idUpdate}`,
+                    form,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
                     },
-                });
-                console.log(data);
-                setSuccessMessage(data.masssage);
+                );
+                setSuccessMessage(data.message);
             }
             await http(token).get('/events/manage?limit=5');
         } catch (error) {
@@ -193,7 +181,6 @@ const UpdateEvent = () => {
                     }) => (
                         <View style={styles.scrolHight}>
                             <Text style={styles.text}>Update Event</Text>
-                            {errorMessage && <Alert>{errorMessage}</Alert>}
                             {successMessage && (
                                 <View style={styles.border}>
                                     <Icon
@@ -365,7 +352,7 @@ const UpdateEvent = () => {
                                 <TouchableOpacity onPress={handleSubmit}>
                                     <View style={styles.button}>
                                         <Text style={styles.textButton}>
-                                            Create
+                                            Update
                                         </Text>
                                     </View>
                                 </TouchableOpacity>

@@ -176,7 +176,7 @@ const EditProfile = () => {
                 });
             }
             if (professionValue) {
-                form.append('phoneNumber', professionValue);
+                form.append('profession', professionValue);
             }
             if (nationalityValue) {
                 form.append('nasionality', nationalityValue);

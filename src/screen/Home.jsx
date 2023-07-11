@@ -8,14 +8,13 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/Feather';
 import globalStyles from '../assets/globalStyles';
 import http from '../helpers/http';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
-import {setEvent} from '../redux/reducers/eventsDetail';
 
 const Home = () => {
     const navigation = useNavigation();
@@ -36,10 +35,10 @@ const Home = () => {
         navigation.navigate('EvenDetail', {id});
     };
 
-    async function getDataEvent(name, searchEvent) {
+    async function getDataEvent(name) {
         try {
-            const {data} = await http().get('/events?limit=20', {
-                params: {category: name, search: searchEvent},
+            const {data} = await http().get('/events', {
+                params: {category: name},
             });
             console.log(data);
             setEvents(data.results);
@@ -50,6 +49,23 @@ const Home = () => {
             }
         }
     }
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchEvents = async () => {
+                try {
+                    const {data} = await http().get('/events');
+                    console.log(data);
+                    setEvents(data.results);
+                } catch (error) {
+                    const message = error?.response?.data?.message;
+                    if (message) {
+                        console.log(message);
+                    }
+                }
+            };
+            fetchEvents();
+        }, []),
+    );
 
     React.useEffect(() => {
         getDataEvent(searchEvent);
