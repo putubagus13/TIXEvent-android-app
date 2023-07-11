@@ -26,6 +26,8 @@ const CreateEvents = () => {
     const [update, setUpdate] = React.useState(false);
     const [events, setEvents] = React.useState([]);
     const token = useSelector(state => state.auth.token);
+    const [wishListButton, setWishListButton] = React.useState(false);
+    const [idUpdate, setIdUpdate] = React.useState('');
 
     const getEventManage = React.useCallback(async () => {
         const {data} = await http(token).get('/events/manage?limit=10');
@@ -54,6 +56,27 @@ const CreateEvents = () => {
         }, [token]),
     );
 
+    const addRemoveWishlist = async id => {
+        try {
+            if (wishListButton === false) {
+                const form = new URLSearchParams({eventId: id}).toString();
+                await http(token).post('/wishList', form);
+                console.log('test');
+                setWishListButton(true);
+            }
+            if (wishListButton === true) {
+                const form = new URLSearchParams({eventId: id}).toString();
+                await http(token).delete('/wishList', form);
+                setWishListButton(false);
+            }
+        } catch (err) {
+            const message = err?.response?.data?.message;
+            if (message) {
+                console.log(message);
+            }
+        }
+    };
+
     const deleteEventsManage = async id => {
         try {
             await http(token).delete(`/events/manage/${id}`);
@@ -69,11 +92,11 @@ const CreateEvents = () => {
         getEventManage();
     };
 
-    const doUpdate = () => {
+    const updateButton = id => {
+        setIdUpdate(id);
         setUpdate(!update);
         getEventManage();
     };
-
     React.useEffect(() => {
         async function getEventMenage() {
             try {
@@ -111,19 +134,22 @@ const CreateEvents = () => {
                     </TouchableOpacity>
                 )}
                 {update !== false && (
-                    <TouchableOpacity onPress={doUpdate}>
+                    <TouchableOpacity onPress={updateButton}>
                         <Text style={styles.text}>Cancle</Text>
                     </TouchableOpacity>
                 )}
                 <View>
                     {create && <CrtEvent />}
-                    {update && <UpdateEvent />}
-                    {/* <View style={styles.bookingWrap}>
-                        <Text style={styles.heading}>Create new event</Text>
-                        <Text style={styles.paragraf}>
-                            Do a create event to share the event that was shown
-                        </Text>
-                    </View> */}
+                    {update && <UpdateEvent idUpdate={idUpdate} />}
+                    {/* {events.length < 1 && (
+                        <View style={styles.bookingWrap}>
+                            <Text style={styles.heading}>Create new event</Text>
+                            <Text style={styles.paragraf}>
+                                Do a create event to share the event that was
+                                shown
+                            </Text>
+                        </View>
+                    )} */}
                     {create === false && update === false && (
                         <View style={styles.mainContain}>
                             {events.map(event => {
@@ -144,12 +170,25 @@ const CreateEvents = () => {
                                                     )}
                                                 </Text>
                                             </View>
-                                            <TouchableOpacity>
-                                                <Icon
-                                                    style={styles.icon}
-                                                    name="heart"
-                                                    size={22}
-                                                />
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    addRemoveWishlist(event.id)
+                                                }>
+                                                {wishListButton === false ? (
+                                                    <Icon
+                                                        style={styles.icon}
+                                                        name="heart"
+                                                        size={22}
+                                                    />
+                                                ) : (
+                                                    <Icon
+                                                        style={
+                                                            globalStyles.colorError
+                                                        }
+                                                        name="heart"
+                                                        size={22}
+                                                    />
+                                                )}
                                             </TouchableOpacity>
                                         </View>
                                         <View style={styles.event}>
@@ -182,7 +221,9 @@ const CreateEvents = () => {
                                                     </Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity
-                                                    onPress={doUpdate}>
+                                                    onPress={() =>
+                                                        updateButton(event.id)
+                                                    }>
                                                     <Text
                                                         style={
                                                             globalStyles.colorAccent
