@@ -30,6 +30,7 @@ import SplashScreen from './SplashScreen';
 import Booking from './Booking';
 import Payment from './Payment';
 import DetailReservation from './DetailReservation';
+import Search from './Search';
 
 const AuthStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -171,6 +172,11 @@ function DrawerComponent() {
             <Drawer.Screen
                 name="DetailReservation"
                 component={DetailReservation}
+                options={{drawerLabel: () => null}}
+            />
+            <Drawer.Screen
+                name="Search"
+                component={Search}
                 options={{drawerLabel: () => null}}
             />
         </Drawer.Navigator>
