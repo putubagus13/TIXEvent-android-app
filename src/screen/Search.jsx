@@ -7,20 +7,21 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import React from 'react';
-import Header from '../components/Header';
 import http from '../helpers/http';
 import moment from 'moment';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {FlatList} from 'react-native-gesture-handler';
+import PageButton from '../components/PageButton';
 
 const Search = () => {
     const navigation = useNavigation();
     const [searchEvent, setSearchEvent] = React.useState([]);
     const [events, setEvents] = React.useState([]);
     const [page, setPage] = React.useState(1);
+    const [totalPage, setTotalPage] = React.useState();
 
     const eventDetail = id => {
-        navigation.navigate('EvenDetail', {id});
+        navigation.navigate('Detail Event', {id});
     };
 
     async function getDataEvent(searchEvent, page) {
@@ -30,6 +31,7 @@ const Search = () => {
             );
             console.log(data);
             setEvents(data.results);
+            setTotalPage(data.pageInfo.totalPage);
         } catch (error) {
             const message = error?.response?.data?.message;
             if (message) {
@@ -65,10 +67,9 @@ const Search = () => {
             data={events}
             ListHeaderComponent={
                 <View style={styles.mainWrap}>
-                    <Header>Search</Header>
                     <TextInput
                         onChangeText={setSearchEvent}
-                        placeholder="Search"
+                        placeholder="Search Events..."
                         placeholderTextColor="#9ca3af"
                         style={styles.search}
                     />
@@ -77,28 +78,30 @@ const Search = () => {
             numColumns={2}
             contentContainerStyle={styles.containerOne}
             renderItem={({item}) => (
-                <View style={styles.bannerContainer}>
-                    {!events && (
-                        <Image
-                            style={styles.banner}
-                            source={require('../assets/Bitmap.png')}
-                        />
-                    )}
-                    {events && (
-                        <Image
-                            style={styles.banner}
-                            source={{
-                                uri: item.picture,
-                            }}
-                        />
-                    )}
-                    <View style={styles.wrapTextBanner}>
-                        <Text style={styles.textWhite}>
-                            {moment(item.date).format('MMMM Do YYYY, h:mm')}
-                        </Text>
-                        <Text style={styles.textTitle}>{item.title}</Text>
+                <TouchableOpacity onPress={() => eventDetail(item.id)}>
+                    <View style={styles.bannerContainer}>
+                        {!events && (
+                            <Image
+                                style={styles.banner}
+                                source={require('../assets/Bitmap.png')}
+                            />
+                        )}
+                        {events && (
+                            <Image
+                                style={styles.banner}
+                                source={{
+                                    uri: item.picture,
+                                }}
+                            />
+                        )}
+                        <View style={styles.wrapTextBanner}>
+                            <Text style={styles.textWhite}>
+                                {moment(item.date).format('MMMM Do YYYY, h:mm')}
+                            </Text>
+                            <Text style={styles.textTitle}>{item.title}</Text>
+                        </View>
                     </View>
-                </View>
+                </TouchableOpacity>
             )}
             ListFooterComponent={
                 <View
@@ -109,24 +112,15 @@ const Search = () => {
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}>
-                    <TouchableOpacity onPress={() => setPage(page - 1)}>
-                        <View
-                            style={{
-                                height: 40,
-                                width: 60,
-                                borderRadius: 5,
-                                backgroundColor: '#006967',
-                                justifyContent: 'center',
-                            }}>
-                            <Text
-                                style={{
-                                    textAlign: 'center',
-                                    fontWeight: '500',
-                                }}>
-                                Back
-                            </Text>
+                    {page === 1 ? (
+                        <View style={styles.wraper}>
+                            <Text style={styles.text}>Back</Text>
                         </View>
-                    </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity onPress={() => setPage(page - 1)}>
+                            <PageButton>Back</PageButton>
+                        </TouchableOpacity>
+                    )}
                     <Text
                         style={{
                             fontSize: 22,
@@ -135,24 +129,15 @@ const Search = () => {
                         }}>
                         {page}
                     </Text>
-                    <TouchableOpacity onPress={() => setPage(page + 1)}>
-                        <View
-                            style={{
-                                height: 40,
-                                width: 60,
-                                borderRadius: 5,
-                                backgroundColor: '#006967',
-                                justifyContent: 'center',
-                            }}>
-                            <Text
-                                style={{
-                                    textAlign: 'center',
-                                    fontWeight: '500',
-                                }}>
-                                Next
-                            </Text>
+                    {page === totalPage ? (
+                        <View style={styles.wraper}>
+                            <Text style={styles.text}>Next</Text>
                         </View>
-                    </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity onPress={() => setPage(page + 1)}>
+                            <PageButton>Next</PageButton>
+                        </TouchableOpacity>
+                    )}
                 </View>
             }
         />
@@ -167,7 +152,7 @@ const styles = StyleSheet.create({
     },
 
     search: {
-        width: 'auto',
+        width: 300,
         height: 45,
         borderColor: '#9ca3af',
         borderWidth: 1,
@@ -184,6 +169,7 @@ const styles = StyleSheet.create({
         height: 'auto',
         borderTopEndRadius: 40,
         borderTopStartRadius: 40,
+        alignItems: 'center',
     },
 
     bannerContainer: {
@@ -216,6 +202,20 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '600',
         fontSize: 20,
+    },
+
+    wraper: {
+        height: 40,
+        width: 60,
+        borderRadius: 5,
+        backgroundColor: '#9ca3af',
+        justifyContent: 'center',
+    },
+
+    text: {
+        textAlign: 'center',
+        fontWeight: '500',
+        color: 'white',
     },
 });
 

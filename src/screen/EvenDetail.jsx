@@ -7,7 +7,6 @@ import {
     ScrollView,
 } from 'react-native';
 import React from 'react';
-import Header from '../components/Header';
 import moment from 'moment';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import http from '../helpers/http';
@@ -31,7 +30,6 @@ const EvenDetail = () => {
     }, [id]);
     return (
         <View style={styles.wrapMain}>
-            <Header>Event Detail</Header>
             <ScrollView showsVerticalScrollIndicator={true}>
                 <View style={styles.wrapBanner}>
                     {!events.picture && (

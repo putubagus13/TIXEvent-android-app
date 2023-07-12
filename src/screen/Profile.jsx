@@ -14,7 +14,11 @@ import {useSelector} from 'react-redux';
 import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import Header from '../components/Header';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import EditProfile from './EditProfile';
+import ChangePassword from './ChangePassword';
+
+const Stack = createNativeStackNavigator();
 
 const Profile = () => {
     const navigation = useNavigation();
@@ -57,7 +61,6 @@ const Profile = () => {
 
     return (
         <View style={styles.mainWrap}>
-            <Header>Profile</Header>
             <View style={styles.main}>
                 <View style={styles.picture}>
                     <View style={styles.imageWrap}>
@@ -109,7 +112,7 @@ const Profile = () => {
                 </ScrollView>
                 <View style={{gap: 20, paddingBottom: 30}}>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('EditProfile')}>
+                        onPress={() => navigation.navigate('Edit Profile')}>
                         <View style={styles.wrap}>
                             <View style={styles.editProfile}>
                                 <Icon
@@ -129,7 +132,7 @@ const Profile = () => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('ChangePassword')}>
+                        onPress={() => navigation.navigate('Change Password')}>
                         <View style={styles.wrap}>
                             <View style={styles.editProfile}>
                                 <Icon
@@ -261,4 +264,13 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Profile;
+const ProfileStack = () => {
+    return (
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="Profile " component={Profile} />
+            <Stack.Screen name="Edit Profile" component={EditProfile} />
+            <Stack.Screen name="Change Password" component={ChangePassword} />
+        </Stack.Navigator>
+    );
+};
+export default ProfileStack;

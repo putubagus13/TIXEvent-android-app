@@ -1,7 +1,6 @@
 import {View, StyleSheet, Text, Image} from 'react-native';
 import React from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import Header from '../components/Header';
 import {useFocusEffect} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import http from '../helpers/http';
@@ -34,7 +33,6 @@ const DetailReservation = () => {
     );
     return (
         <View style={styles.mainWrap}>
-            <Header>Detail Booking</Header>
             <View style={styles.main}>
                 <Text
                     style={{

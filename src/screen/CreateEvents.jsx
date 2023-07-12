@@ -16,7 +16,6 @@ import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import globalStyles from '../assets/globalStyles';
 import CrtEvent from '../components/CrtEvent';
-import Header from '../components/Header';
 import moment from 'moment';
 import UpdateEvent from '../components/UpdateEvent';
 
@@ -114,7 +113,6 @@ const CreateEvents = () => {
     }, [token]);
     return (
         <View style={styles.mainWrap}>
-            <Header>Create Event</Header>
             <View style={styles.main}>
                 {create === false && (
                     <TouchableOpacity onPress={() => setCreate(!create)}>

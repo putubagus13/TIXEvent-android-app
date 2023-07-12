@@ -1,6 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
     createDrawerNavigator,
@@ -8,29 +8,23 @@ import {
     DrawerItemList,
     DrawerItem,
 } from '@react-navigation/drawer';
+import {StyleSheet} from 'react-native';
 import {logout} from '../redux/reducers/auth';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Home from './Home';
 import Profile from './Profile';
-import EditProfile from './EditProfile';
-import ChangePassword from './ChangePassword';
-import EvenDetail from './EvenDetail';
 import MyBooking from './MyBooking';
 import MyWishlist from './MyWishlist';
 import Signup from './Signup';
 import Login from './Login';
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
-import Landingpage from './SplashScreen';
 import CreateEvents from './CreateEvents';
 import Touchid from './Touchid';
 import SpalshScreen from './SplashScreen';
 import SplashScreen from './SplashScreen';
-import Booking from './Booking';
-import Payment from './Payment';
-import DetailReservation from './DetailReservation';
-import Search from './Search';
+import Header from '../components/Header';
 
 const AuthStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -52,147 +46,12 @@ function CustomDrawerContent(props) {
     );
 }
 
-function DrawerComponent() {
-    return (
-        <Drawer.Navigator
-            screenOptions={{
-                headerShown: false,
-                drawerStyle: {
-                    backgroundColor: '#eaeaea',
-                    width: 240,
-                },
-            }}
-            drawerContent={props => <CustomDrawerContent {...props} />}>
-            <Drawer.Screen
-                name="SplashScreen"
-                component={SplashScreen}
-                options={{drawerLabel: () => null}}
-            />
-            <Drawer.Screen
-                name="Home"
-                component={Home}
-                options={{
-                    drawerIcon: ({color, size}) => (
-                        <FontAwesome5Icon
-                            name="home"
-                            color={color}
-                            size={size}
-                        />
-                    ),
-                    drawerLabel: 'Home',
-                }}
-            />
-            <Drawer.Screen
-                name="Profile"
-                component={Profile}
-                options={{
-                    drawerIcon: ({color, size}) => (
-                        <FeatherIcon name="user" color={color} size={size} />
-                    ),
-
-                    drawerLabel: 'Profile',
-                }}
-            />
-            <Drawer.Screen
-                name="EditProfile"
-                component={EditProfile}
-                options={{
-                    drawerIcon: ({color, size}) => (
-                        <FeatherIcon name="user" color={color} size={size} />
-                    ),
-                    drawerItemStyle: {
-                        display: 'none',
-                    },
-                    drawerLabel: 'EditProfile',
-                }}
-            />
-            <Drawer.Screen
-                name="ChangePassword"
-                component={ChangePassword}
-                options={{
-                    drawerIcon: ({color, size}) => (
-                        <FeatherIcon name="user" color={color} size={size} />
-                    ),
-                    drawerItemStyle: {
-                        display: 'none',
-                    },
-                    drawerLabel: 'Change Password',
-                }}
-            />
-            <Drawer.Screen
-                name="CreateEvents"
-                component={CreateEvents}
-                options={{
-                    drawerIcon: ({color, size}) => (
-                        <FeatherIcon
-                            name="plus-circle"
-                            color={color}
-                            size={size}
-                        />
-                    ),
-                    drawerLabel: 'Create Event',
-                }}
-            />
-            <Drawer.Screen
-                name="MyBooking"
-                component={MyBooking}
-                options={{
-                    drawerIcon: ({color, size}) => (
-                        <FeatherIcon name="book" color={color} size={size} />
-                    ),
-                    drawerLabel: 'My Booking',
-                }}
-            />
-            <Drawer.Screen
-                name="MyWishlist"
-                component={MyWishlist}
-                options={{
-                    drawerIcon: ({color, size}) => (
-                        <FeatherIcon name="heart" color={color} size={size} />
-                    ),
-                    drawerLabel: 'My Wishlist',
-                }}
-            />
-
-            <Drawer.Screen
-                name="EvenDetail"
-                component={EvenDetail}
-                options={{drawerLabel: () => null}}
-            />
-            <Drawer.Screen
-                name="Booking"
-                component={Booking}
-                options={{drawerLabel: () => null}}
-            />
-            <Drawer.Screen
-                name="Payment"
-                component={Payment}
-                options={{drawerLabel: () => null}}
-            />
-            <Drawer.Screen
-                name="DetailReservation"
-                component={DetailReservation}
-                options={{drawerLabel: () => null}}
-            />
-            <Drawer.Screen
-                name="Search"
-                component={Search}
-                options={{drawerLabel: () => null}}
-            />
-        </Drawer.Navigator>
-    );
-}
-
 const Main = () => {
     const token = useSelector(state => state.auth.token);
     return (
         <NavigationContainer>
             {!token && (
                 <AuthStack.Navigator screenOptions={{headerShown: false}}>
-                    <AuthStack.Screen
-                        name="SplashScreen"
-                        component={SplashScreen}
-                    />
                     <AuthStack.Screen name="Signup" component={Signup} />
                     <AuthStack.Screen name="Login" component={Login} />
                     <AuthStack.Screen name="Touchid" component={Touchid} />
@@ -207,12 +66,105 @@ const Main = () => {
                 </AuthStack.Navigator>
             )}
             {token && (
-                <>
-                    <DrawerComponent />
-                </>
+                <Drawer.Navigator
+                    screenOptions={{
+                        drawerStyle: {
+                            backgroundColor: '#eaeaea',
+                            width: 240,
+                        },
+                        // headerStyle: styleHeader.header,
+                        // headerShadowVisible: false,
+                        // headerTitleStyle: styleHeader.text,
+                        header: Header,
+                    }}
+                    drawerContent={props => <CustomDrawerContent {...props} />}>
+                    <Drawer.Screen
+                        name="Home"
+                        component={Home}
+                        options={{
+                            drawerIcon: ({color, size}) => (
+                                <FontAwesome5Icon
+                                    name="home"
+                                    color={color}
+                                    size={size}
+                                />
+                            ),
+                            drawerLabel: 'Home',
+                        }}
+                    />
+                    <Drawer.Screen
+                        name="Profile"
+                        component={Profile}
+                        options={{
+                            drawerIcon: ({color, size}) => (
+                                <FeatherIcon
+                                    name="user"
+                                    color={color}
+                                    size={size}
+                                />
+                            ),
+
+                            drawerLabel: 'Profile',
+                        }}
+                    />
+                    <Drawer.Screen
+                        name="Create Events"
+                        component={CreateEvents}
+                        options={{
+                            drawerIcon: ({color, size}) => (
+                                <FeatherIcon
+                                    name="plus-circle"
+                                    color={color}
+                                    size={size}
+                                />
+                            ),
+                            drawerLabel: 'Create Event',
+                        }}
+                    />
+                    <Drawer.Screen
+                        name="My Booking"
+                        component={MyBooking}
+                        options={{
+                            drawerIcon: ({color, size}) => (
+                                <FeatherIcon
+                                    name="book"
+                                    color={color}
+                                    size={size}
+                                />
+                            ),
+                            drawerLabel: 'My Booking',
+                        }}
+                    />
+                    <Drawer.Screen
+                        name="My Wishlist"
+                        component={MyWishlist}
+                        options={{
+                            drawerIcon: ({color, size}) => (
+                                <FeatherIcon
+                                    name="heart"
+                                    color={color}
+                                    size={size}
+                                />
+                            ),
+                            drawerLabel: 'My Wishlist',
+                        }}
+                    />
+                </Drawer.Navigator>
             )}
         </NavigationContainer>
     );
 };
+
+const styleHeader = StyleSheet.create({
+    header: {
+        backgroundColor: '#006967',
+        textAlign: 'center',
+    },
+
+    text: {
+        color: 'white',
+        alignItems: 'center',
+    },
+});
 
 export default Main;

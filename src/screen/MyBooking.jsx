@@ -9,7 +9,6 @@ import {
 import React from 'react';
 import http from '../helpers/http';
 import Icon from 'react-native-vector-icons/Feather';
-import Header from '../components/Header';
 import {useSelector} from 'react-redux';
 import globalStyles from '../assets/globalStyles';
 import moment from 'moment';
@@ -65,7 +64,6 @@ const MyBooking = () => {
 
     return (
         <View style={styles.mainWrap}>
-            <Header>My Booking</Header>
             <View style={styles.main}>
                 <TouchableOpacity>
                     <View style={styles.dateWrap}>
