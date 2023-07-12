@@ -16,7 +16,6 @@ import {Formik} from 'formik';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import globalStyles from '../assets/globalStyles';
 import DropDownPicker from 'react-native-dropdown-picker';
-import Header from '../components/Header';
 import {useFocusEffect} from '@react-navigation/native';
 
 const EditProfile = () => {
@@ -213,7 +212,6 @@ const EditProfile = () => {
     };
     return (
         <View style={styles.mainWrap}>
-            <Header>Edit Profile</Header>
             <ScrollView showsVerticalScrollIndicator={true}>
                 <View style={styles.form}>
                     <View style={styles.picture}>

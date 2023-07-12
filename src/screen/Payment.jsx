@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import React from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import Header from '../components/Header';
 import {useSelector} from 'react-redux';
 import http from '../helpers/http';
 import FAwesome from 'react-native-vector-icons/FontAwesome5';
@@ -49,7 +48,6 @@ const Payment = () => {
     return (
         <ScrollView showsVerticalScrollIndicator={true}>
             <View style={styles.mainWrap}>
-                <Header>Payment</Header>
                 <View style={styles.main}>
                     <Text
                         style={{

@@ -1,7 +1,6 @@
 import {
     View,
     Text,
-    TextInput,
     StyleSheet,
     Image,
     ScrollView,
@@ -9,19 +8,24 @@ import {
 } from 'react-native';
 import React from 'react';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/Feather';
 import globalStyles from '../assets/globalStyles';
 import http from '../helpers/http';
 import moment from 'moment';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Search from './Search';
+import EvenDetail from './EvenDetail';
+import Payment from './Payment';
+import Booking from './Booking';
+import SplashScreen from 'react-native-splash-screen';
+
+const Stack = createNativeStackNavigator();
 
 const Home = () => {
     const navigation = useNavigation();
-    const dispatch = useDispatch();
     const [events, setEvents] = React.useState([]);
     const [categoryData, setcategoryData] = React.useState([]);
-    const [searchEvent, setSearchEvent] = React.useState('');
     const token = useSelector(state => state.auth.token);
     const deviceToken = useSelector(state => state.deviceToken.data);
 
@@ -32,7 +36,7 @@ const Home = () => {
     }, [token, deviceToken]);
 
     const eventDetail = id => {
-        navigation.navigate('EvenDetail', {id});
+        navigation.navigate('Detail Event', {id});
     };
 
     async function getDataEvent(name) {
@@ -68,7 +72,7 @@ const Home = () => {
     );
 
     React.useEffect(() => {
-        getDataEvent(searchEvent);
+        getDataEvent();
         saveToken();
 
         async function getCategory() {
@@ -84,18 +88,15 @@ const Home = () => {
             }
         }
         getCategory();
-    }, [searchEvent, saveToken]);
+    }, [saveToken]);
+
+    React.useEffect(() => {
+        SplashScreen.hide();
+    }, []);
 
     return (
         <ScrollView showsVerticalScrollIndicator={true}>
             <View style={styles.mainWrap}>
-                <Header>Home</Header>
-                <TextInput
-                    onChangeText={setSearchEvent}
-                    placeholder="Search"
-                    placeholderTextColor="#9ca3af"
-                    style={styles.search}
-                />
                 <View style={styles.containerOne}>
                     <View name="date" style={styles.dateWrap}>
                         <View style={styles.date}>
@@ -579,6 +580,7 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: '#003d3b',
         height: '100%',
+        marginTop: 50,
         borderTopEndRadius: 40,
         borderTopStartRadius: 40,
         paddingTop: 10,
@@ -767,4 +769,15 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Home;
+const HomeStack = () => {
+    return (
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="HomeMain" component={Home} />
+            <Stack.Screen name="Search" component={Search} />
+            <Stack.Screen name="Detail Event" component={EvenDetail} />
+            <Stack.Screen name="Booking" component={Booking} />
+            <Stack.Screen name="Payment" component={Payment} />
+        </Stack.Navigator>
+    );
+};
+export default HomeStack;

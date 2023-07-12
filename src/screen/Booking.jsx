@@ -10,7 +10,6 @@ import React from 'react';
 
 import FAwesome from 'react-native-vector-icons/FontAwesome5';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import Header from '../components/Header';
 import {useSelector} from 'react-redux';
 import http from '../helpers/http';
 import Alert from '../components/Alert';
@@ -111,7 +110,6 @@ const Booking = () => {
     return (
         <ScrollView showsVerticalScrollIndicator={true}>
             <View style={styles.mainWrap}>
-                <Header>My Booking</Header>
                 <View style={styles.main}>
                     <View
                         style={{

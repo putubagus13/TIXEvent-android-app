@@ -6,7 +6,6 @@ import http from '../helpers/http';
 import {useSelector} from 'react-redux';
 import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
-import Header from '../components/Header';
 
 const ChangePassword = () => {
     const token = useSelector(state => state.auth.token);
@@ -48,7 +47,6 @@ const ChangePassword = () => {
 
     return (
         <View style={styles.mainWrap}>
-            <Header>Change Password</Header>
             <Formik
                 initialValues={{
                     oldPassword: '',
