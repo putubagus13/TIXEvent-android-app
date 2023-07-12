@@ -10,6 +10,7 @@ import {clearMessage} from '../redux/reducers/auth';
 import {clearFormError} from '../redux/reducers/auth';
 import * as Yup from 'yup';
 import globalStyles from '../assets/globalStyles';
+import SplashScreen from 'react-native-splash-screen';
 
 const validationSchema = Yup.object({
     fullName: Yup.string()
@@ -42,6 +43,10 @@ const Signup = () => {
             setErrorMsg(formError.errors[0].msg);
         }
     };
+
+    React.useEffect(() => {
+        SplashScreen.hide();
+    }, []);
 
     return (
         <View style={styles.mainWrap}>
