@@ -70,7 +70,7 @@ const MyWishlist = () => {
         <View style={styles.mainWrap}>
             <View style={styles.main}>
                 <View>
-                    {wishList.length < 0 && (
+                    {wishList.length < 1 && (
                         <View style={styles.bookingWrap}>
                             <Text style={styles.heading}>No ticket bought</Text>
                             <Text style={styles.paragraf}>
