@@ -3,73 +3,136 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    Image,
     ScrollView,
 } from 'react-native';
 import React from 'react';
-import Input from '../components/Input';
-import {Formik} from 'formik';
 import http from '../helpers/http';
 import {useSelector} from 'react-redux';
-import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import globalStyles from '../assets/globalStyles';
+import moment from 'moment';
 
 const MyWishlist = () => {
     const navigation = useNavigation();
+    const [wishList, setWishList] = React.useState([]);
+    const token = useSelector(state => state.auth.token);
+    const [page, setPage] = React.useState(1);
+    console.log(wishList);
+
+    const getWishLish = React.useCallback(async () => {
+        try {
+            const {data} = await http(token).get(
+                `/wishList?page=${page}&limit=10`,
+            );
+            setWishList(data.results);
+        } catch (error) {
+            const message = error?.response?.data?.message;
+            if (message) {
+                console.log(message);
+            }
+        }
+    }, [token, page]);
+
+    React.useEffect(() => {
+        getWishLish(page);
+    }, [getWishLish, page]);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchWishlish = async () => {
+                try {
+                    const {data} = await http(token).get('/wishList');
+                    setWishList(data.results);
+                } catch (error) {
+                    const message = error?.response?.data?.message;
+                    if (message) {
+                        console.log(message);
+                    }
+                }
+            };
+            fetchWishlish();
+        }, [token]),
+    );
+
+    const doRemoveWishList = async id => {
+        try {
+            await http(token).delete(`/wishList/${id}`);
+            getWishLish();
+        } catch (error) {
+            const message = error?.response?.data?.message;
+            if (message) {
+                console.log(message);
+            }
+        }
+    };
     return (
         <View style={styles.mainWrap}>
             <View style={styles.main}>
                 <View>
-                    {/* <View style={styles.bookingWrap}>
-                        <Text style={styles.heading}>No ticket bought</Text>
-                        <Text style={styles.paragraf}>
-                            It appears you haven’t bought any tickets yet. Maybe
-                            try searching these?
-                        </Text>
-                    </View> */}
-                    <View style={styles.mainContain}>
-                        <View style={styles.conten}>
-                            <View style={styles.eventWrap}>
-                                <View>
-                                    <Text style={styles.dateText}>15</Text>
-                                    <Text style={styles.paragraf}>Wed</Text>
-                                </View>
-                                <TouchableOpacity>
-                                    <Icon
-                                        style={styles.icon}
-                                        name="heart"
-                                        size={22}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.event}>
-                                <Text style={styles.titleText}>
-                                    Sights & Sounds Exhibition
-                                </Text>
-                                <View style={styles.eventLocation}>
-                                    <Text style={globalStyles.colorNeutral}>
-                                        Jakarta, Indonesia
-                                    </Text>
-                                    <Text style={globalStyles.colorNeutral}>
-                                        Wed, 15 Nov, 4:00 PM
-                                    </Text>
-                                </View>
-                                <View style={styles.option}>
-                                    <TouchableOpacity>
-                                        <Text style={globalStyles.colorAccent}>
-                                            Detail
-                                        </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <Text style={globalStyles.colorAccent}>
-                                            Delete
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+                    {wishList.length < 0 && (
+                        <View style={styles.bookingWrap}>
+                            <Text style={styles.heading}>No ticket bought</Text>
+                            <Text style={styles.paragraf}>
+                                It appears you haven’t bought any tickets yet.
+                                Maybe try searching these?
+                            </Text>
                         </View>
+                    )}
+                    <View style={styles.mainContain}>
+                        {wishList.map(items => (
+                            <View
+                                style={styles.conten}
+                                key={`wishlist${items.id}`}>
+                                <View style={styles.eventWrap}>
+                                    <View>
+                                        <Text style={styles.dateText}>
+                                            {moment(items.date).format('DD')}
+                                        </Text>
+                                        <Text style={styles.paragraf}>
+                                            {moment(items.date).format('ddd')}
+                                        </Text>
+                                    </View>
+                                    {items.idEvent === items.eventId && (
+                                        <TouchableOpacity
+                                            onPress={() =>
+                                                doRemoveWishList(items.eventId)
+                                            }>
+                                            <Icon
+                                                style={globalStyles.colorError}
+                                                name="heart"
+                                                size={22}
+                                            />
+                                        </TouchableOpacity>
+                                    )}
+                                </View>
+                                <View style={styles.event}>
+                                    <Text style={styles.titleText}>
+                                        {items.title}
+                                    </Text>
+                                    <View style={styles.eventLocation}>
+                                        <Text style={globalStyles.colorNeutral}>
+                                            {items.location}, Indonesia
+                                        </Text>
+                                        <Text style={globalStyles.colorNeutral}>
+                                            {moment(items.date).format(
+                                                'MMMM Do YYYY, h:mm a',
+                                            )}
+                                        </Text>
+                                    </View>
+                                    <View style={styles.option}>
+                                        <TouchableOpacity>
+                                            <Text
+                                                style={
+                                                    globalStyles.colorAccent
+                                                }>
+                                                Detail
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        ))}
                     </View>
                 </View>
             </View>
