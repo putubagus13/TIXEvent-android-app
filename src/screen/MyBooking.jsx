@@ -13,6 +13,10 @@ import {useSelector} from 'react-redux';
 import globalStyles from '../assets/globalStyles';
 import moment from 'moment';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import DetailReservation from './DetailReservation';
+
+const Stack = createNativeStackNavigator();
 
 const MyBooking = () => {
     const navigation = useNavigation();
@@ -20,7 +24,7 @@ const MyBooking = () => {
     const token = useSelector(state => state.auth.token);
 
     const detailReservation = id => {
-        navigation.navigate('DetailReservation', {id});
+        navigation.navigate('Detail', {id});
     };
 
     const getReservation = React.useCallback(async () => {
@@ -256,5 +260,12 @@ const styles = StyleSheet.create({
         paddingTop: 50,
     },
 });
-
-export default MyBooking;
+const BookingStack = () => {
+    return (
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="My Booking" component={MyBooking} />
+            <Stack.Screen name="Detail" component={DetailReservation} />
+        </Stack.Navigator>
+    );
+};
+export default BookingStack;

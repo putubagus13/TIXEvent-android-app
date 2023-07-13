@@ -33,7 +33,7 @@ const Payment = () => {
             const {data} = await http(token).post('/payment', body);
             console.log(data);
             if (data.results) {
-                navigation.navigate('MyBooking', {
+                navigation.navigate('My Booking', {
                     replace: true,
                 });
             }
