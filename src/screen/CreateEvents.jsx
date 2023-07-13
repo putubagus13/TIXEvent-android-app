@@ -25,7 +25,7 @@ const CreateEvents = () => {
     const [update, setUpdate] = React.useState(false);
     const [events, setEvents] = React.useState([]);
     const token = useSelector(state => state.auth.token);
-    const [wishListButton, setWishListButton] = React.useState(false);
+    const [wishList, setWishList] = React.useState([]);
     const [idUpdate, setIdUpdate] = React.useState('');
 
     const getEventManage = React.useCallback(async () => {
@@ -57,16 +57,16 @@ const CreateEvents = () => {
 
     const addRemoveWishlist = async id => {
         try {
-            if (wishListButton === false) {
-                const form = new URLSearchParams({eventId: id}).toString();
+            const form = new URLSearchParams({eventId: id}).toString();
+            const {data} = await http(token).get(`/wishList/${id}`);
+            console.log(data);
+            if (data.results) {
+                const dltWishlist = await http(token).delete(`/wishList/${id}`);
+                console.log(dltWishlist);
+                getEventManage();
+            } else if (data.message === 'wishlist not found') {
                 await http(token).post('/wishList', form);
-                console.log('test');
-                setWishListButton(true);
-            }
-            if (wishListButton === true) {
-                const form = new URLSearchParams({eventId: id}).toString();
-                await http(token).delete('/wishList', form);
-                setWishListButton(false);
+                getEventManage();
             }
         } catch (err) {
             const message = err?.response?.data?.message;
@@ -168,17 +168,13 @@ const CreateEvents = () => {
                                                     )}
                                                 </Text>
                                             </View>
-                                            <TouchableOpacity
-                                                onPress={() =>
-                                                    addRemoveWishlist(event.id)
-                                                }>
-                                                {wishListButton === false ? (
-                                                    <Icon
-                                                        style={styles.icon}
-                                                        name="heart"
-                                                        size={22}
-                                                    />
-                                                ) : (
+                                            {event.id === event.eventId ? (
+                                                <TouchableOpacity
+                                                    onPress={() =>
+                                                        addRemoveWishlist(
+                                                            event.id,
+                                                        )
+                                                    }>
                                                     <Icon
                                                         style={
                                                             globalStyles.colorError
@@ -186,8 +182,23 @@ const CreateEvents = () => {
                                                         name="heart"
                                                         size={22}
                                                     />
-                                                )}
-                                            </TouchableOpacity>
+                                                </TouchableOpacity>
+                                            ) : (
+                                                <TouchableOpacity
+                                                    onPress={() =>
+                                                        addRemoveWishlist(
+                                                            event.id,
+                                                        )
+                                                    }>
+                                                    <Icon
+                                                        style={
+                                                            globalStyles.colorNeutral
+                                                        }
+                                                        name="heart"
+                                                        size={22}
+                                                    />
+                                                </TouchableOpacity>
+                                            )}
                                         </View>
                                         <View style={styles.event}>
                                             <Text style={styles.titleText}>
@@ -301,7 +312,7 @@ const styles = StyleSheet.create({
         height: 520,
         width: '100%',
         alignItems: 'center',
-        gap: 10,
+        gap: 15,
     },
 
     dateText: {
