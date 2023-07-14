@@ -12,8 +12,7 @@ import moment from 'moment';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {FlatList} from 'react-native-gesture-handler';
 import PageButton from '../components/PageButton';
-import globalStyles from '../assets/globalStyles';
-import SortBy from '../components/sortBy';
+import SortBy from '../components/SortBy';
 import LinearGradient from 'react-native-linear-gradient';
 
 const Search = () => {
@@ -272,7 +271,7 @@ const styles = StyleSheet.create({
     wraperSortBy: {
         height: 25,
         width: 50,
-        backgroundColor: '#f59e0b',
+        backgroundColor: '#9ca3af',
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center',
