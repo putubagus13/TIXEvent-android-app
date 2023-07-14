@@ -19,6 +19,25 @@ const globalStyles = StyleSheet.create({
         alignItems: 'center',
     },
 
+    conten: {
+        width: '100%',
+        height: 'auto',
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        paddingVertical: 10,
+        borderRadius: 20,
+        justifyContent: 'space-between',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
+    },
+
     inputComponent: {flex: 1, color: '#003d3b'},
 });
 
