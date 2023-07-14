@@ -69,6 +69,11 @@ const MyWishlist = () => {
             }
         }
     };
+
+    const eventDetail = id => {
+        navigation.navigate('Detail Event', {id});
+    };
+
     return (
         <ScrollView showsVerticalScrollIndicator={true}>
             <View style={styles.mainWrap}>
@@ -141,7 +146,10 @@ const MyWishlist = () => {
                                             </Text>
                                         </View>
                                         <View style={styles.option}>
-                                            <TouchableOpacity>
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    eventDetail(items.eventId)
+                                                }>
                                                 <Text
                                                     style={
                                                         globalStyles.colorAccent

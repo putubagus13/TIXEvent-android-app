@@ -111,6 +111,10 @@ const CreateEvents = () => {
         }
         getEventMenage();
     }, [token]);
+
+    const eventDetail = id => {
+        navigation.navigate('Detail Event', {id});
+    };
     return (
         <View style={styles.mainWrap}>
             <View style={styles.main}>
@@ -221,7 +225,10 @@ const CreateEvents = () => {
                                                 </Text>
                                             </View>
                                             <View style={styles.option}>
-                                                <TouchableOpacity>
+                                                <TouchableOpacity
+                                                    onPress={() =>
+                                                        eventDetail(event.id)
+                                                    }>
                                                     <Text
                                                         style={
                                                             globalStyles.colorAccent
