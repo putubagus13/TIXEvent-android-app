@@ -332,7 +332,10 @@ const Home = () => {
                                 <Text style={styles.textHeadding}>
                                     Upcoming
                                 </Text>
-                                <TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() =>
+                                        navigation.navigate('Search')
+                                    }>
                                     <Text style={styles.seeAll}>See All</Text>
                                 </TouchableOpacity>
                             </View>
@@ -378,177 +381,6 @@ const Home = () => {
                                                         top: 0,
                                                         left: 0,
                                                     }}
-                                                />
-                                                <View
-                                                    style={
-                                                        styles.wrapTextBanner
-                                                    }>
-                                                    <Text
-                                                        style={
-                                                            styles.textWhite
-                                                        }>
-                                                        Wed, 15 Nov, 04.00 PM
-                                                    </Text>
-                                                    <Text
-                                                        style={
-                                                            styles.textTitle
-                                                        }>
-                                                        Sights & Sounds
-                                                        Exhibition
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity>
-                                            <View style={styles.button}>
-                                                <Text style={styles.textButton}>
-                                                    See All 5 Event
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                                <View style={styles.gruping}>
-                                    <View>
-                                        <View style={styles.brdDate}>
-                                            <Text
-                                                style={
-                                                    globalStyles.colorSecondary
-                                                }>
-                                                15
-                                            </Text>
-                                            <Text
-                                                style={
-                                                    globalStyles.colorSecondary
-                                                }>
-                                                Tue
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <TouchableOpacity
-                                            onPress={() =>
-                                                navigation.navigate('')
-                                            }>
-                                            <View
-                                                style={styles.bannerContainer}>
-                                                <Image
-                                                    style={styles.banner}
-                                                    source={require('../assets/Bitmap.png')}
-                                                />
-                                                <View
-                                                    style={
-                                                        styles.wrapTextBanner
-                                                    }>
-                                                    <Text
-                                                        style={
-                                                            styles.textWhite
-                                                        }>
-                                                        Wed, 15 Nov, 04.00 PM
-                                                    </Text>
-                                                    <Text
-                                                        style={
-                                                            styles.textTitle
-                                                        }>
-                                                        Sights & Sounds
-                                                        Exhibition
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity>
-                                            <View style={styles.button}>
-                                                <Text style={styles.textButton}>
-                                                    See All 5 Event
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                                <View style={styles.gruping}>
-                                    <View>
-                                        <View style={styles.brdDate}>
-                                            <Text
-                                                style={
-                                                    globalStyles.colorSecondary
-                                                }>
-                                                15
-                                            </Text>
-                                            <Text
-                                                style={
-                                                    globalStyles.colorSecondary
-                                                }>
-                                                Tue
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <TouchableOpacity
-                                            onPress={() =>
-                                                navigation.navigate('')
-                                            }>
-                                            <View
-                                                style={styles.bannerContainer}>
-                                                <Image
-                                                    style={styles.banner}
-                                                    source={require('../assets/Bitmap.png')}
-                                                />
-                                                <View
-                                                    style={
-                                                        styles.wrapTextBanner
-                                                    }>
-                                                    <Text
-                                                        style={
-                                                            styles.textWhite
-                                                        }>
-                                                        Wed, 15 Nov, 04.00 PM
-                                                    </Text>
-                                                    <Text
-                                                        style={
-                                                            styles.textTitle
-                                                        }>
-                                                        Sights & Sounds
-                                                        Exhibition
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity>
-                                            <View style={styles.button}>
-                                                <Text style={styles.textButton}>
-                                                    See All 5 Event
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                                <View style={styles.gruping}>
-                                    <View>
-                                        <View style={styles.brdDate}>
-                                            <Text
-                                                style={
-                                                    globalStyles.colorSecondary
-                                                }>
-                                                15
-                                            </Text>
-                                            <Text
-                                                style={
-                                                    globalStyles.colorSecondary
-                                                }>
-                                                Tue
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <TouchableOpacity
-                                            onPress={() =>
-                                                navigation.navigate('')
-                                            }>
-                                            <View
-                                                style={styles.bannerContainer}>
-                                                <Image
-                                                    style={styles.banner}
-                                                    source={require('../assets/Bitmap.png')}
                                                 />
                                                 <View
                                                     style={
@@ -840,7 +672,7 @@ const styles = StyleSheet.create({
 const HomeStack = () => {
     return (
         <Stack.Navigator screenOptions={{headerShown: false}}>
-            <Stack.Screen name="HomeMain" component={Home} />
+            <Stack.Screen name=" " component={Home} />
             <Stack.Screen name="Search" component={Search} />
             <Stack.Screen name="Detail Event" component={EvenDetail} />
             <Stack.Screen name="Booking" component={Booking} />
