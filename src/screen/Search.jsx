@@ -12,6 +12,9 @@ import moment from 'moment';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {FlatList} from 'react-native-gesture-handler';
 import PageButton from '../components/PageButton';
+import globalStyles from '../assets/globalStyles';
+import SortBy from '../components/sortBy';
+import LinearGradient from 'react-native-linear-gradient';
 
 const Search = () => {
     const navigation = useNavigation();
@@ -19,15 +22,17 @@ const Search = () => {
     const [events, setEvents] = React.useState([]);
     const [page, setPage] = React.useState(1);
     const [totalPage, setTotalPage] = React.useState();
+    const [sortBy, setSortBy] = React.useState('');
+    console.log(sortBy);
 
     const eventDetail = id => {
         navigation.navigate('Detail Event', {id});
     };
 
-    async function getDataEvent(searchEvent, page) {
+    async function getDataEvent(searchEvent, page, sortBy) {
         try {
             const {data} = await http().get(
-                `/events?limit=10&search=${searchEvent}&page=${page}`,
+                `/events?limit=10&search=${searchEvent}&page=${page}&sortBy=${sortBy}`,
             );
             console.log(data);
             setEvents(data.results);
@@ -59,8 +64,8 @@ const Search = () => {
     );
 
     React.useEffect(() => {
-        getDataEvent(searchEvent, page);
-    }, [searchEvent, page]);
+        getDataEvent(searchEvent, page, sortBy);
+    }, [searchEvent, page, sortBy]);
 
     return (
         <FlatList
@@ -73,6 +78,31 @@ const Search = () => {
                         placeholderTextColor="#9ca3af"
                         style={styles.search}
                     />
+                    <View style={{flexDirection: 'row', gap: 5}}>
+                        <Text style={{color: 'black'}}>SortBy: </Text>
+                        {sortBy === 'DESC' ? (
+                            <TouchableOpacity onPress={() => setSortBy('DESC')}>
+                                <SortBy>DESC</SortBy>
+                            </TouchableOpacity>
+                        ) : (
+                            <TouchableOpacity onPress={() => setSortBy('DESC')}>
+                                <View style={styles.wraperSortBy}>
+                                    <Text style={styles.textSortBy}>DESC</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                        {sortBy === 'ASC' ? (
+                            <TouchableOpacity onPress={() => setSortBy('ASC')}>
+                                <SortBy>ASC</SortBy>
+                            </TouchableOpacity>
+                        ) : (
+                            <TouchableOpacity onPress={() => setSortBy('ASC')}>
+                                <View style={styles.wraperSortBy}>
+                                    <Text style={styles.textSortBy}>ASC</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                    </View>
                 </View>
             }
             numColumns={2}
@@ -94,6 +124,19 @@ const Search = () => {
                                 }}
                             />
                         )}
+                        <LinearGradient
+                            colors={[
+                                'rgba(225, 225, 225, 0)',
+                                'rgba(13, 12, 12, 1)',
+                            ]}
+                            style={{
+                                position: 'absolute',
+                                width: 150,
+                                height: 180,
+                                top: 0,
+                                left: 0,
+                            }}
+                        />
                         <View style={styles.wrapTextBanner}>
                             <Text style={styles.textWhite}>
                                 {moment(item.date).format('MMMM Do YYYY, h:mm')}
@@ -147,8 +190,10 @@ const Search = () => {
 const styles = StyleSheet.create({
     mainWrap: {
         width: '100%',
-        backgroundColor: 'white',
         height: 'auto',
+        paddingHorizontal: 40,
+        gap: 10,
+        paddingVertical: 30,
     },
 
     search: {
@@ -159,13 +204,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         color: '#003d3b',
         paddingHorizontal: 16,
-        marginVertical: 30,
-        marginHorizontal: 40,
     },
 
     containerOne: {
         width: '100%',
-        backgroundColor: 'white',
         height: 'auto',
         borderTopEndRadius: 40,
         borderTopStartRadius: 40,
@@ -173,12 +215,21 @@ const styles = StyleSheet.create({
     },
 
     bannerContainer: {
+        position: 'relative',
         width: 150,
         height: 180,
         overflow: 'hidden',
         borderRadius: 20,
         margin: 5,
-        position: 'relative',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+
+        elevation: 3,
     },
 
     banner: {
@@ -216,6 +267,21 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: '500',
         color: 'white',
+    },
+
+    wraperSortBy: {
+        height: 25,
+        width: 50,
+        backgroundColor: '#f59e0b',
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    textSortBy: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 12,
     },
 });
 
