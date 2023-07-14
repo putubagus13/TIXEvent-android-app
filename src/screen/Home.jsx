@@ -19,6 +19,7 @@ import EvenDetail from './EvenDetail';
 import Payment from './Payment';
 import Booking from './Booking';
 import SplashScreen from 'react-native-splash-screen';
+import LinearGradient from 'react-native-linear-gradient';
 
 const Stack = createNativeStackNavigator();
 
@@ -184,6 +185,20 @@ const Home = () => {
                                                             }}
                                                         />
                                                     )}
+                                                    <LinearGradient
+                                                        colors={[
+                                                            'rgba(255, 255, 255, 0)',
+                                                            'rgba(13, 12, 12, 1)',
+                                                        ]}
+                                                        style={{
+                                                            position:
+                                                                'absolute',
+                                                            width: 210,
+                                                            height: 280,
+                                                            top: 0,
+                                                            left: 0,
+                                                        }}
+                                                    />
                                                     <View
                                                         style={
                                                             styles.wrapTextBanner
@@ -301,7 +316,10 @@ const Home = () => {
                                                             />
                                                         )}
                                                     </View>
-                                                    <Text>
+                                                    <Text
+                                                        style={{
+                                                            color: '#f59e0b',
+                                                        }}>
                                                         {items.name.toUpperCase()}
                                                     </Text>
                                                 </View>
@@ -347,6 +365,19 @@ const Home = () => {
                                                 <Image
                                                     style={styles.banner}
                                                     source={require('../assets/Bitmap.png')}
+                                                />
+                                                <LinearGradient
+                                                    colors={[
+                                                        'rgba(255, 255, 255, 0)',
+                                                        'rgba(13, 12, 12, 1)',
+                                                    ]}
+                                                    style={{
+                                                        position: 'absolute',
+                                                        width: 210,
+                                                        height: 280,
+                                                        top: 0,
+                                                        left: 0,
+                                                    }}
                                                 />
                                                 <View
                                                     style={
@@ -678,7 +709,7 @@ const styles = StyleSheet.create({
 
     Icon: globalStyles.colorSecondary,
 
-    locationIcon: {color: '#0ea5e9'},
+    locationIcon: {color: 'white'},
 
     dateSelect: {
         justifyContent: 'center',
@@ -703,7 +734,17 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         borderRadius: 20,
         marginHorizontal: 5,
+        marginVertical: 10,
         position: 'relative',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.23,
+        shadowRadius: 2.62,
+
+        elevation: 5,
     },
 
     banner: {
@@ -722,7 +763,7 @@ const styles = StyleSheet.create({
     },
 
     discover: {
-        backgroundColor: '#0ea5e9',
+        backgroundColor: 'white',
         width: 150,
         borderRadius: 50,
         flexDirection: 'row',
@@ -730,16 +771,34 @@ const styles = StyleSheet.create({
         paddingVertical: 7,
         paddingHorizontal: 10,
         alignItems: 'center',
-        marginHorizontal: 5,
+        margin: 5,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+
+        elevation: 3,
     },
 
     discoverChildren: {
         width: 35,
         height: 35,
         borderRadius: 100,
-        backgroundColor: 'white',
+        backgroundColor: '#f59e0b',
         justifyContent: 'center',
         alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+
+        elevation: 3,
     },
 
     seeAll: {
@@ -766,6 +825,15 @@ const styles = StyleSheet.create({
         width: 50,
         alignItems: 'center',
         paddingVertical: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.23,
+        shadowRadius: 2.62,
+
+        elevation: 4,
     },
 });
 

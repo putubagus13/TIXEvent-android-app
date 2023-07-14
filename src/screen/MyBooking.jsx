@@ -90,7 +90,7 @@ const MyBooking = () => {
                             {historysData.map(items => (
                                 <View
                                     key={`history${items.id}`}
-                                    style={styles.conten}>
+                                    style={globalStyles.conten}>
                                     <View style={styles.eventWrap}>
                                         <Text style={styles.dateText}>
                                             {moment(items.date).format('DD')}
@@ -206,13 +206,6 @@ const styles = StyleSheet.create({
         color: '#f59e0b',
         fontSize: 14,
         fontWeight: '600',
-    },
-
-    conten: {
-        width: '100%',
-        height: 'auto',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
     },
 
     heading: {

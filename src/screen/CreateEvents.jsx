@@ -154,7 +154,7 @@ const CreateEvents = () => {
                                 return (
                                     <View
                                         key={`event-${event.id}`}
-                                        style={styles.conten}>
+                                        style={globalStyles.conten}>
                                         <View style={styles.eventWrap}>
                                             <View>
                                                 <Text style={styles.dateText}>
@@ -320,13 +320,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '600',
         textAlign: 'center',
-    },
-
-    conten: {
-        width: '100%',
-        height: 'auto',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
     },
 
     heading: {

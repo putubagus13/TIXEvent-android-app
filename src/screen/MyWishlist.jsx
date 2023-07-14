@@ -88,7 +88,7 @@ const MyWishlist = () => {
                         <View style={styles.mainContain}>
                             {wishList.map(items => (
                                 <View
-                                    style={styles.conten}
+                                    style={globalStyles.conten}
                                     key={`wishlist${items.id}`}>
                                     <View style={styles.eventWrap}>
                                         <View>
@@ -252,13 +252,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 14,
         fontWeight: '600',
-    },
-
-    conten: {
-        width: '100%',
-        height: 'auto',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
     },
 
     heading: {
