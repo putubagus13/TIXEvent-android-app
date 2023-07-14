@@ -3,15 +3,11 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    Image,
     ScrollView,
 } from 'react-native';
 import React from 'react';
-import Input from '../components/Input';
-import {Formik} from 'formik';
 import http from '../helpers/http';
 import {useSelector} from 'react-redux';
-import Alert from '../components/Alert';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import globalStyles from '../assets/globalStyles';
@@ -116,34 +112,35 @@ const CreateEvents = () => {
         navigation.navigate('Detail Event', {id});
     };
     return (
-        <View style={styles.mainWrap}>
-            <View style={styles.main}>
-                {create === false && (
-                    <TouchableOpacity onPress={() => setCreate(!create)}>
-                        <View style={styles.dateWrap}>
-                            <Icon
-                                style={styles.icon}
-                                name="file-plus"
-                                size={20}
-                            />
-                            <Text style={styles.text}>Create</Text>
-                        </View>
-                    </TouchableOpacity>
-                )}
-                {create !== false && (
-                    <TouchableOpacity onPress={doCreate}>
-                        <Text style={styles.text}>Cancle</Text>
-                    </TouchableOpacity>
-                )}
-                {update !== false && (
-                    <TouchableOpacity onPress={updateButton}>
-                        <Text style={styles.text}>Cancle</Text>
-                    </TouchableOpacity>
-                )}
-                <View>
-                    {create && <CrtEvent />}
-                    {update && <UpdateEvent idUpdate={idUpdate} />}
-                    {/* {events.length < 1 && (
+        <ScrollView showsVerticalScrollIndicator={true}>
+            <View style={styles.mainWrap}>
+                <View style={styles.main}>
+                    {create === false && (
+                        <TouchableOpacity onPress={() => setCreate(!create)}>
+                            <View style={styles.dateWrap}>
+                                <Icon
+                                    style={styles.icon}
+                                    name="file-plus"
+                                    size={20}
+                                />
+                                <Text style={styles.text}>Create</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                    {create !== false && (
+                        <TouchableOpacity onPress={doCreate}>
+                            <Text style={styles.text}>Cancle</Text>
+                        </TouchableOpacity>
+                    )}
+                    {update !== false && (
+                        <TouchableOpacity onPress={updateButton}>
+                            <Text style={styles.text}>Cancle</Text>
+                        </TouchableOpacity>
+                    )}
+                    <View>
+                        {create && <CrtEvent />}
+                        {update && <UpdateEvent idUpdate={idUpdate} />}
+                        {/* {events.length < 1 && (
                         <View style={styles.bookingWrap}>
                             <Text style={styles.heading}>Create new event</Text>
                             <Text style={styles.paragraf}>
@@ -152,124 +149,136 @@ const CreateEvents = () => {
                             </Text>
                         </View>
                     )} */}
-                    {create === false && update === false && (
-                        <View style={styles.mainContain}>
-                            {events.map(event => {
-                                return (
-                                    <View
-                                        key={`event-${event.id}`}
-                                        style={globalStyles.conten}>
-                                        <View style={styles.eventWrap}>
-                                            <View>
-                                                <Text style={styles.dateText}>
-                                                    {moment(event.date).format(
-                                                        'DD',
-                                                    )}
-                                                </Text>
-                                                <Text style={styles.paragraf}>
-                                                    {moment(event.date).format(
-                                                        'ddd',
-                                                    )}
-                                                </Text>
+                        {create === false && update === false && (
+                            <View style={styles.mainContain}>
+                                {events.map(event => {
+                                    return (
+                                        <View
+                                            key={`event-${event.id}`}
+                                            style={globalStyles.conten}>
+                                            <View style={styles.eventWrap}>
+                                                <View>
+                                                    <Text
+                                                        style={styles.dateText}>
+                                                        {moment(
+                                                            event.date,
+                                                        ).format('DD')}
+                                                    </Text>
+                                                    <Text
+                                                        style={styles.paragraf}>
+                                                        {moment(
+                                                            event.date,
+                                                        ).format('ddd')}
+                                                    </Text>
+                                                </View>
+                                                {event.id === event.eventId ? (
+                                                    <TouchableOpacity
+                                                        onPress={() =>
+                                                            addRemoveWishlist(
+                                                                event.id,
+                                                            )
+                                                        }>
+                                                        <Icon
+                                                            style={
+                                                                globalStyles.colorError
+                                                            }
+                                                            name="heart"
+                                                            size={22}
+                                                        />
+                                                    </TouchableOpacity>
+                                                ) : (
+                                                    <TouchableOpacity
+                                                        onPress={() =>
+                                                            addRemoveWishlist(
+                                                                event.id,
+                                                            )
+                                                        }>
+                                                        <Icon
+                                                            style={
+                                                                globalStyles.colorNeutral
+                                                            }
+                                                            name="heart"
+                                                            size={22}
+                                                        />
+                                                    </TouchableOpacity>
+                                                )}
                                             </View>
-                                            {event.id === event.eventId ? (
-                                                <TouchableOpacity
-                                                    onPress={() =>
-                                                        addRemoveWishlist(
-                                                            event.id,
-                                                        )
+                                            <View style={styles.event}>
+                                                <Text style={styles.titleText}>
+                                                    {event.title}
+                                                </Text>
+                                                <View
+                                                    style={
+                                                        styles.eventLocation
                                                     }>
-                                                    <Icon
-                                                        style={
-                                                            globalStyles.colorError
-                                                        }
-                                                        name="heart"
-                                                        size={22}
-                                                    />
-                                                </TouchableOpacity>
-                                            ) : (
-                                                <TouchableOpacity
-                                                    onPress={() =>
-                                                        addRemoveWishlist(
-                                                            event.id,
-                                                        )
-                                                    }>
-                                                    <Icon
+                                                    <Text
                                                         style={
                                                             globalStyles.colorNeutral
-                                                        }
-                                                        name="heart"
-                                                        size={22}
-                                                    />
-                                                </TouchableOpacity>
-                                            )}
-                                        </View>
-                                        <View style={styles.event}>
-                                            <Text style={styles.titleText}>
-                                                {event.title}
-                                            </Text>
-                                            <View style={styles.eventLocation}>
-                                                <Text
-                                                    style={
-                                                        globalStyles.colorNeutral
-                                                    }>
-                                                    {event.location}
-                                                </Text>
-                                                <Text
-                                                    style={
-                                                        globalStyles.colorNeutral
-                                                    }>
-                                                    {moment(event.date).format(
-                                                        'MMMM Do YYYY, h:mm a',
-                                                    )}
-                                                </Text>
-                                            </View>
-                                            <View style={styles.option}>
-                                                <TouchableOpacity
-                                                    onPress={() =>
-                                                        eventDetail(event.id)
-                                                    }>
+                                                        }>
+                                                        {event.location}
+                                                    </Text>
                                                     <Text
                                                         style={
-                                                            globalStyles.colorAccent
+                                                            globalStyles.colorNeutral
                                                         }>
-                                                        Detail
+                                                        {moment(
+                                                            event.date,
+                                                        ).format(
+                                                            'MMMM Do YYYY, h:mm a',
+                                                        )}
                                                     </Text>
-                                                </TouchableOpacity>
-                                                <TouchableOpacity
-                                                    onPress={() =>
-                                                        updateButton(event.id)
-                                                    }>
-                                                    <Text
-                                                        style={
-                                                            globalStyles.colorAccent
+                                                </View>
+                                                <View style={styles.option}>
+                                                    <TouchableOpacity
+                                                        onPress={() =>
+                                                            eventDetail(
+                                                                event.id,
+                                                            )
                                                         }>
-                                                        Update
-                                                    </Text>
-                                                </TouchableOpacity>
-                                                <TouchableOpacity
-                                                    onPress={() =>
-                                                        deleteEventsManage(
-                                                            event.id,
-                                                        )
-                                                    }>
-                                                    <Text
-                                                        style={
-                                                            globalStyles.colorAccent
+                                                        <Text
+                                                            style={
+                                                                globalStyles.colorAccent
+                                                            }>
+                                                            Detail
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity
+                                                        onPress={() =>
+                                                            updateButton(
+                                                                event.id,
+                                                            )
                                                         }>
-                                                        Delete
-                                                    </Text>
-                                                </TouchableOpacity>
+                                                        <Text
+                                                            style={
+                                                                globalStyles.colorAccent
+                                                            }>
+                                                            Update
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity
+                                                        onPress={() =>
+                                                            deleteEventsManage(
+                                                                event.id,
+                                                            )
+                                                        }>
+                                                        <Text
+                                                            style={
+                                                                globalStyles.colorAccent
+                                                            }>
+                                                            Delete
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                </View>
                                             </View>
                                         </View>
-                                    </View>
-                                );
-                            })}
-                        </View>
-                    )}
+                                    );
+                                })}
+                            </View>
+                        )}
+                    </View>
                 </View>
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
