@@ -6,6 +6,7 @@ const globalStyles = StyleSheet.create({
     colorAccent: {color: '#f59e0b'},
     colorNeutral: {color: '#9ca3af'},
     colorError: {color: '#e11d48'},
+    colorWhite: {color: 'white'},
 
     input: {
         height: 45,
