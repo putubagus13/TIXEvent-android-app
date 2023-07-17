@@ -89,6 +89,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+        storeFile file('tixevent.keystore')
+        storePassword 'Lanang12'
+        keyAlias 'tixevent'
+        keyPassword 'Lanang12'
+        }
     }
     buildTypes {
         debug {
