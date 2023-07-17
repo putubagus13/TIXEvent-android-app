@@ -184,7 +184,9 @@ const DetailReservation = () => {
                                         fontSize: 20,
                                         fontWeight: 700,
                                     }}>
-                                    IDR {detailReservation?.price}
+                                    IDR{' '}
+                                    {detailReservation?.price *
+                                        detailReservation.quantity}
                                 </Text>
                             </View>
                             <View>
